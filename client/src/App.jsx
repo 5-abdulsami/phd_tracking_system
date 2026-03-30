@@ -10,8 +10,6 @@ import DashboardPage from './pages/DashboardPage';
 import ApplicationForm from './pages/ApplicationForm';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminApplications from './pages/AdminApplications';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminApplications from './pages/AdminApplications';
 import NotificationsPage from './pages/NotificationsPage';
 import HomePage from './pages/HomePage';
 const ProtectedRoute = ({ children, role }) => {
