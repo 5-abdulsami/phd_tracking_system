@@ -1,41 +1,45 @@
-const { bucket } = require('../config/firebase');
+const { supabase, bucketName } = require('../config/supabase');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
-const uploadToFirebase = (file, folder) => {
-  return new Promise((resolve, reject) => {
+/**
+ * Uploads a file to Supabase Storage
+ * @param {Object} file - Multer file object
+ * @param {string} folder - Folder name in the bucket
+ * @returns {Promise<string>} - Public URL of the uploaded file
+ */
+const uploadToSupabase = async (file, folder) => {
+  try {
     if (!file) {
-      reject('No file provided');
+      throw new Error('No file provided');
     }
 
     const fileName = `${folder}/${uuidv4()}_${path.parse(file.originalname).name}${path.extname(file.originalname)}`;
-    const fileUpload = bucket.file(fileName);
 
-    const blobStream = fileUpload.createWriteStream({
-      metadata: {
+    const { data, error } = await supabase.storage
+      .from(bucketName)
+      .upload(fileName, file.buffer, {
         contentType: file.mimetype,
-      },
-    });
+        upsert: false,
+      });
 
-    blobStream.on('error', (error) => {
-      reject(error);
-    });
+    if (error) {
+      throw error;
+    }
 
-    blobStream.on('finish', async () => {
-      // Configuration for the public URL
-      try {
-        await fileUpload.makePublic();
-        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileUpload.name}`;
-        resolve(publicUrl);
-      } catch (error) {
-        reject(error);
-      }
-    });
+    const { data: { publicUrl } } = supabase.storage
+      .from(bucketName)
+      .getPublicUrl(fileName);
 
-    blobStream.end(file.buffer);
-  });
+    return publicUrl;
+  } catch (error) {
+    console.error('Supabase Storage Upload Error:', error);
+    throw error;
+  }
 };
 
 module.exports = {
-  uploadToFirebase,
+  uploadToSupabase,
+  // Keep the old name as alias if needed, but we will update the controller
+  uploadToFirebase: uploadToSupabase, 
 };

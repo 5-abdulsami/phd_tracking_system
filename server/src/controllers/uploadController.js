@@ -1,4 +1,4 @@
-const { uploadToFirebase } = require('../utils/upload');
+const { uploadToSupabase } = require('../utils/upload');
 const multer = require('multer');
 
 // Configure multer to use memory storage
@@ -18,7 +18,7 @@ const upload = multer({
   },
 });
 
-// @desc    Upload file to Firebase
+// @desc    Upload file to Supabase Storage
 // @route   POST /api/upload
 // @access  Private
 const uploadFile = async (req, res) => {
@@ -29,7 +29,7 @@ const uploadFile = async (req, res) => {
     }
 
     const folder = req.body.folder || 'applications';
-    const fileUrl = await uploadToFirebase(req.file, folder);
+    const fileUrl = await uploadToSupabase(req.file, folder);
 
     res.json({
       url: fileUrl,
