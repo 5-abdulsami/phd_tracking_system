@@ -18,6 +18,9 @@ app.use(helmet({
 }));
 
 // Routes
+const { notFound, errorHandler } = require('./middleware/errorMiddleware');
+
+// Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/applications', require('./routes/applicationRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
@@ -27,17 +30,11 @@ app.get('/', (req, res) => {
   res.send('PhD Tracking System API is running...');
 });
 
-// Error Handler
-app.use((err, req, res, next) => {
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-  res.status(statusCode);
-  res.json({
-    message: err.message,
-    stack: process.env.NODE_ENV === 'production' ? null : err.stack,
-  });
-});
+// Middleware for Error Handling
+app.use(notFound);
+app.use(errorHandler);
 
-const PORT = process.env.PORT || 6000;
+const PORT = process.env.PORT || 7000;
 
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);

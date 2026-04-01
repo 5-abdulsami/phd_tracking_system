@@ -23,7 +23,7 @@ const Navbar = () => {
     }}>
       <div className="container flex justify-between items-center">
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <img src="/spectrum_logo.png" alt="Spectrum Consultants" style={{ height: '50px' }} />
+          <img src="../assets/spectrum_logo.png" alt="Spectrum Consultants" style={{ height: '50px' }} />
           <div>
             <span style={{ fontWeight: 700, fontSize: '1.2rem', color: 'var(--secondary-dark)' }}>PHD</span>
             <span style={{ fontWeight: 400, fontSize: '1.2rem', color: 'var(--text-muted)' }}>TRACKING</span>
@@ -38,7 +38,7 @@ const Navbar = () => {
               ) : (
                 <Link to="/dashboard" className="nav-link">Application</Link>
               )}
-              
+
               <Link to="/notifications" style={{ position: 'relative' }}>
                 <Bell size={20} color="var(--secondary-dark)" />
                 <span className="badge" style={{
@@ -47,15 +47,15 @@ const Navbar = () => {
                   borderRadius: '50%', padding: '2px 5px', fontSize: '10px'
                 }}>0</span>
               </Link>
-              
+
               <div className="user-profile flex items-center gap-10">
                 <UserIcon size={20} color="var(--secondary-dark)" />
                 <span className="email-text" style={{ fontSize: '0.9rem', fontWeight: 600 }}>
                   {user.email.split('@')[0]}
                 </span>
               </div>
-              
-              <button onClick={handleLogout} className="btn-logout" style={{ 
+
+              <button onClick={handleLogout} className="btn-logout" style={{
                 background: 'none', display: 'flex', alignItems: 'center', gap: '5px',
                 color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.9rem'
               }}>

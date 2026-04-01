@@ -1,11 +1,54 @@
 const express = require('express');
+const { check, validationResult } = require('express-validator');
 const { registerUser, authUser, getMe } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.post('/register', registerUser);
-router.post('/login', authUser);
+/**
+ * Handle Validation Results
+ */
+const validate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400);
+    throw new Error(errors.array().map((err) => err.msg).join(', '));
+  }
+  next();
+};
+
+/**
+ * @route   POST /api/auth/register
+ * @desc    Register a new user
+ */
+router.post(
+  '/register',
+  [
+    check('email', 'Please include a valid email').isEmail(),
+    check('password', 'Please enter a password with 6 or more characters').isLength({ min: 6 }),
+    validate
+  ],
+  registerUser
+);
+
+/**
+ * @route   POST /api/auth/login
+ * @desc    Authenticate user & get token
+ */
+router.post(
+  '/login',
+  [
+    check('email', 'Please include a valid email').isEmail(),
+    check('password', 'Password is required').exists(),
+    validate
+  ],
+  authUser
+);
+
+/**
+ * @route   GET /api/auth/me
+ * @desc    Get current user profile
+ */
 router.get('/me', protect, getMe);
 
 module.exports = router;
