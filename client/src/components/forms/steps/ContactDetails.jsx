@@ -6,18 +6,24 @@ const ContactDetails = ({ data, updateData }) => {
     updateData('contactDetails', { ...data, [name]: value });
   };
 
+  const isInvalid = (val) => !val || val.trim() === '';
+  const isEmailInvalid = (val) => !val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+  const isPhoneInvalid = (val) => !val || !/^\+?\d{10,15}$/.test(val.replace(/\s/g, ''));
+
   return (
     <div className="section-form">
       <div className="grid gap-20" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
         <div className="form-group">
-          <label className="block mb-10 font-600">Phone</label>
+          <label className="block mb-10 font-600">Phone <span style={{ color: 'red' }}>*</span></label>
           <input 
             type="text" 
             name="phone"
             value={data?.phone || ''} 
             onChange={handleChange}
-            placeholder="Enter phone number" 
+            placeholder="+92 300 1234567" 
+            style={{ borderColor: isPhoneInvalid(data?.phone) ? 'var(--primary-red)' : '' }}
           />
+          {isPhoneInvalid(data?.phone) && data?.phone && <span style={{ color: 'red', fontSize: '0.75rem' }}>Invalid phone format</span>}
         </div>
         <div className="form-group">
           <label className="block mb-10 font-600">Alternate Phone</label>
@@ -26,47 +32,52 @@ const ContactDetails = ({ data, updateData }) => {
             name="alternatePhone"
             value={data?.alternatePhone || ''} 
             onChange={handleChange}
-            placeholder="Enter alternate phone" 
+            placeholder="Optional" 
           />
         </div>
         <div className="form-group">
-          <label className="block mb-10 font-600">Contact Email</label>
+          <label className="block mb-10 font-600">Primary Email <span style={{ color: 'red' }}>*</span></label>
           <input 
             type="email" 
             name="email"
             value={data?.email || ''} 
             onChange={handleChange}
-            placeholder="Enter secondary email" 
+            placeholder="name@example.com" 
+            style={{ borderColor: isEmailInvalid(data?.email) ? 'var(--primary-red)' : '' }}
           />
+          {isEmailInvalid(data?.email) && data?.email && <span style={{ color: 'red', fontSize: '0.75rem' }}>Invalid email format</span>}
         </div>
         <div className="form-group">
-          <label className="block mb-10 font-600">Current Address</label>
+          <label className="block mb-10 font-600">Current Address <span style={{ color: 'red' }}>*</span></label>
           <input 
             type="text" 
             name="address"
             value={data?.address || ''} 
             onChange={handleChange}
-            placeholder="Enter home address" 
+            placeholder="House #, Street, Area" 
+            style={{ borderColor: isInvalid(data?.address) ? 'var(--primary-red)' : '' }}
           />
         </div>
         <div className="form-group">
-          <label className="block mb-10 font-600">City</label>
+          <label className="block mb-10 font-600">City <span style={{ color: 'red' }}>*</span></label>
           <input 
             type="text" 
             name="city"
             value={data?.city || ''} 
             onChange={handleChange}
             placeholder="Enter city" 
+            style={{ borderColor: isInvalid(data?.city) ? 'var(--primary-red)' : '' }}
           />
         </div>
         <div className="form-group">
-          <label className="block mb-10 font-600">Country</label>
+          <label className="block mb-10 font-600">Country <span style={{ color: 'red' }}>*</span></label>
           <input 
             type="text" 
             name="country"
             value={data?.country || ''} 
             onChange={handleChange}
             placeholder="Enter country" 
+            style={{ borderColor: isInvalid(data?.country) ? 'var(--primary-red)' : '' }}
           />
         </div>
       </div>

@@ -9,6 +9,12 @@ const Documents = ({ data = {}, updateData }) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    // Basic file size check (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size too large. Max 5MB allowed.');
+      return;
+    }
+
     setUploading({ ...uploading, [type]: true });
     
     const formData = new FormData();
@@ -29,34 +35,34 @@ const Documents = ({ data = {}, updateData }) => {
   };
 
   const docTypes = [
-    { key: 'cv', label: 'CV / Resume' },
-    { key: 'sop', label: 'Statement of Purpose (SOP)' },
-    { key: 'transcript', label: 'Academic Transcripts' },
-    { key: 'passport', label: 'Passport / ID Copy' },
-    { key: 'englishCert', label: 'English Proficiency Certificate' },
+    { key: 'cv', label: 'CV / Resume', required: true },
+    { key: 'sop', label: 'Statement of Purpose (SOP)', required: true },
+    { key: 'transcript', label: 'Academic Transcripts', required: true },
+    { key: 'passport', label: 'Passport / ID Copy', required: true },
+    { key: 'englishCert', label: 'English Proficiency Certificate', required: false },
   ];
 
   return (
     <div className="section-form">
       <p className="mb-20" style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-        Upload your documents in PDF or Image format (max 5MB each).
+        Upload your documents in PDF or Image format (max 5MB each). Fields marked with <span style={{ color: 'red' }}>*</span> are mandatory.
       </p>
 
       {docTypes.map((doc) => (
-        <div key={doc.key} className="card mb-20" style={{ padding: '20px', border: '1px solid #eee' }}>
+        <div key={doc.key} className="card mb-20" style={{ padding: '20px', border: `1px solid ${doc.required && !data[doc.key] ? 'var(--primary-red)' : '#eee'}` }}>
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-15">
               <div style={{ backgroundColor: '#f3f4f6', padding: '10px', borderRadius: '8px', color: '#666' }}>
                 <File size={24} />
               </div>
               <div>
-                <h4 style={{ fontSize: '1rem', marginBottom: '4px' }}>{doc.label}</h4>
+                <h4 style={{ fontSize: '1rem', marginBottom: '4px' }}>{doc.label} {doc.required && <span style={{ color: 'red' }}>*</span>}</h4>
                 {data[doc.key] ? (
                   <span style={{ fontSize: '0.8rem', color: 'var(--success)', display: 'flex', alignItems: 'center', gap: '5px' }}>
                     <Check size={14} /> Uploaded Successfully
                   </span>
                 ) : (
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Not uploaded yet</span>
+                  <span style={{ fontSize: '0.8rem', color: doc.required ? 'var(--primary-red)' : 'var(--text-muted)' }}>{doc.required ? 'Mandatory upload missing' : 'Not uploaded yet'}</span>
                 )}
               </div>
             </div>

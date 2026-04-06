@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Filter, Eye, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { Search, Filter, Eye, CheckCircle, XCircle, Clock, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const AdminApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -8,6 +9,7 @@ const AdminApplications = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchApplications();
@@ -108,7 +110,12 @@ const AdminApplications = () => {
           </thead>
           <tbody>
             {filteredApps.map((app) => (
-              <tr key={app._id} style={{ borderBottom: '1px solid #f3f4f6' }}>
+              <tr 
+                key={app._id} 
+                className="hover-row"
+                onClick={() => navigate(`/admin/applications/${app._id}`)}
+                style={{ borderBottom: '1px solid #f3f4f6', cursor: 'pointer' }}
+              >
                 <td style={{ padding: '15px 20px', fontWeight: 600 }}>{app.user?.email}</td>
                 <td style={{ padding: '15px 20px' }}>{app.programInfo?.programType || 'N/A'}</td>
                 <td style={{ padding: '15px 20px' }}>
@@ -130,9 +137,10 @@ const AdminApplications = () => {
                 </td>
                 <td style={{ padding: '15px 20px', textAlign: 'right' }}>
                    <div className="flex gap-10 justify-end">
-                      <button onClick={() => updateAppStatus(app._id, 'under_review')} title="Set to Under Review" style={{ color: '#d97706', background: 'none' }}><Clock size={18} /></button>
-                      <button onClick={() => updateAppStatus(app._id, 'accepted')} title="Accept" style={{ color: '#10b981', background: 'none' }}><CheckCircle size={18} /></button>
-                      <button onClick={() => updateAppStatus(app._id, 'rejected')} title="Reject" style={{ color: '#ef4444', background: 'none' }}><XCircle size={18} /></button>
+                      <button onClick={(e) => { e.stopPropagation(); navigate(`/admin/applications/${app._id}`); }} title="View Details" style={{ color: '#3b82f6', background: 'none' }}><Eye size={18} /></button>
+                      <button onClick={(e) => { e.stopPropagation(); updateAppStatus(app._id, 'under_review'); }} title="Set to Under Review" style={{ color: '#d97706', background: 'none' }}><Clock size={18} /></button>
+                      <button onClick={(e) => { e.stopPropagation(); updateAppStatus(app._id, 'accepted'); }} title="Accept" style={{ color: '#10b981', background: 'none' }}><CheckCircle size={18} /></button>
+                      <button onClick={(e) => { e.stopPropagation(); updateAppStatus(app._id, 'rejected'); }} title="Reject" style={{ color: '#ef4444', background: 'none' }}><XCircle size={18} /></button>
                    </div>
                 </td>
               </tr>

@@ -1,5 +1,6 @@
 const Application = require('../models/Application');
 const User = require('../models/User');
+const { sendSubmissionEmail } = require('../utils/emailService');
 
 // @desc    Get or create current student application
 // @route   GET /api/applications/me
@@ -78,6 +79,13 @@ const submitApplication = async (req, res) => {
   application.submittedAt = new Date();
   
   const updatedApplication = await application.save();
+
+  // Send Complete Submission Email Notification
+  if (updatedApplication.status === 'submitted') {
+    // Non-blocking email send with full application data
+    sendSubmissionEmail(updatedApplication);
+  }
+
   res.json(updatedApplication);
 };
 
@@ -107,10 +115,24 @@ const updateStatus = async (req, res) => {
   }
 };
 
+// @desc    Get application by ID
+// @route   GET /api/applications/:id
+// @access  Private (Admin)
+const getApplicationById = async (req, res) => {
+  const application = await Application.findById(req.params.id).populate('user', 'email');
+
+  if (application) {
+    res.json(application);
+  } else {
+    res.status(404).json({ message: 'Application not found' });
+  }
+};
+
 module.exports = {
   getMyApplication,
   updateSection,
   submitApplication,
   getAllApplications,
   updateStatus,
+  getApplicationById,
 };

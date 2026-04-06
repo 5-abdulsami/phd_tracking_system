@@ -112,23 +112,38 @@ const DashboardPage = () => {
         </div>
 
         <div className="sidebar" style={{ flex: 1 }}>
-          <div className="card" style={{ marginBottom: '20px' }}>
-            <h3 style={{ marginBottom: '15px', fontSize: '1.2rem' }}>Need Help?</h3>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '15px' }}>
-              If you have any questions regarding the application process, feel free to contact our advisors.
-            </p>
-            <a href="mailto:info@spectrumconsultants.pk" className="btn btn-dark" style={{ width: '100%', padding: '10px' }}>Contact Support</a>
-          </div>
-
           <div className="card">
-            <h3 style={{ marginBottom: '15px', fontSize: '1.2rem' }}>Documents Needed</h3>
-            <ul style={{ paddingLeft: '20px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-              <li style={{ marginBottom: '8px' }}>CV / Resume</li>
-              <li style={{ marginBottom: '8px' }}>Academic Transcripts</li>
-              <li style={{ marginBottom: '8px' }}>Passport Copy</li>
-              <li style={{ marginBottom: '8px' }}>IELTS/PTE Certificate</li>
-              <li>Statement of Purpose</li>
-            </ul>
+            <h3 style={{ marginBottom: '20px', fontSize: '1.2rem' }}>Section Status</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px' }}>
+              {[
+                { title: 'Applicant Info', key: 'applicantInfo' },
+                { title: 'Contact Details', key: 'contactDetails' },
+                { title: 'Guardian Info', key: 'guardianInfo' },
+                { title: 'Academic Background', key: 'academicBackground' },
+                { title: 'Program Info', key: 'programInfo' },
+                { title: 'Research Experience', key: 'researchExperience' },
+                { title: 'English Proficiency', key: 'englishProficiency' },
+                { title: 'Funding Information', key: 'fundingInfo' },
+                { title: 'Referee Details', key: 'referees' },
+                { title: 'Document Uploads', key: 'documents' },
+                { title: 'Final Declaration', key: 'declaration' }
+              ].map((s, idx) => {
+                const isDone = application?.[s.key] && (Array.isArray(application[s.key]) ? application[s.key].length > 0 : Object.keys(application[s.key]).length > 0);
+                return (
+                  <div key={idx} className="flex justify-between items-center" style={{ 
+                    padding: '10px 15px', borderRadius: '6px', backgroundColor: isDone ? '#f0fdf4' : '#f9fafb',
+                    border: '1px solid', borderColor: isDone ? '#bcf0da' : '#eee'
+                  }}>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 500, color: isDone ? '#166534' : '#666' }}>{s.title}</span>
+                    {isDone ? (
+                      <CheckCircle size={16} color="#22c55e" />
+                    ) : (
+                      <div style={{ width: '16px', height: '16px', borderRadius: '50%', border: '2px solid #e5e7eb' }}></div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

@@ -10,6 +10,7 @@ import DashboardPage from './pages/DashboardPage';
 import ApplicationForm from './pages/ApplicationForm';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminApplications from './pages/AdminApplications';
+import AdminApplicationDetail from './pages/AdminApplicationDetail';
 import NotificationsPage from './pages/NotificationsPage';
 import HomePage from './pages/HomePage';
 const ProtectedRoute = ({ children, role }) => {
@@ -36,6 +37,7 @@ const App = () => {
           <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
           <Route path="/admin/applications" element={<ProtectedRoute role="admin"><AdminApplications /></ProtectedRoute>} />
+          <Route path="/admin/applications/:id" element={<ProtectedRoute role="admin"><AdminApplicationDetail /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </Router>

@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { ArrowLeft, ArrowRight, Save, CheckCircle, ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { 
+  ChevronLeft, ChevronRight, Save, Check,
+  User, Phone, Users, GraduationCap, BookOpen, 
+  FlaskConical, Languages, BadgeDollarSign, Star, 
+  FolderOpen, ClipboardCheck 
+} from 'lucide-react';
 import ApplicantInfo from '../components/forms/steps/ApplicantInfo';
 import ContactDetails from '../components/forms/steps/ContactDetails';
 import GuardianInfo from '../components/forms/steps/GuardianInfo';
@@ -23,8 +28,17 @@ const ApplicationForm = () => {
   const navigate = useNavigate();
 
   const steps = [
-    'Applicant Info', 'Contact Details', 'Guardian Info', 'Academic', 
-    'Program', 'Research', 'English', 'Funding', 'Referees', 'Documents', 'Submission'
+    { title: 'Applicant Info', icon: <User size={18} />, key: 'applicantInfo' },
+    { title: 'Contact Details', icon: <Phone size={18} />, key: 'contactDetails' },
+    { title: 'Guardian Info', icon: <Users size={18} />, key: 'guardianInfo' },
+    { title: 'Academic Background', icon: <GraduationCap size={18} />, key: 'academicBackground' },
+    { title: 'Program Info', icon: <BookOpen size={18} />, key: 'programInfo' },
+    { title: 'Research Experience', icon: <FlaskConical size={18} />, key: 'researchExperience' },
+    { title: 'English Proficiency', icon: <Languages size={18} />, key: 'englishProficiency' },
+    { title: 'Funding Info', icon: <BadgeDollarSign size={18} />, key: 'fundingInfo' },
+    { title: 'Referees', icon: <Star size={18} />, key: 'referees' },
+    { title: 'Documents', icon: <FolderOpen size={18} />, key: 'documents' },
+    { title: 'Submission', icon: <ClipboardCheck size={18} />, key: 'declaration' }
   ];
 
   useEffect(() => {
@@ -41,18 +55,63 @@ const ApplicationForm = () => {
     fetchApplication();
   }, []);
 
+  const isSectionComplete = (key) => {
+    const section = formData[key];
+    if (!section) return false;
+
+    if (key === 'applicantInfo') {
+      return !!(section.firstName && section.lastName && section.dob && section.gender && section.nationality && section.cnic);
+    }
+    if (key === 'contactDetails') {
+      return !!(section.phone && section.email && section.address && section.city && section.country);
+    }
+    if (key === 'guardianInfo') {
+      return !!(section.fatherName && section.motherName && section.guardianPhone && section.guardianEmail && section.occupation);
+    }
+    if (key === 'academicBackground') {
+      return Array.isArray(section) && section.length > 0 && section.every(edu => edu.degree && edu.institution && edu.year && edu.cgpa);
+    }
+    if (key === 'programInfo') {
+      return !!(section.programType && section.proposedField && section.intakeYear);
+    }
+    if (key === 'researchExperience') {
+      return !!(section.workExperience && section.researchStatement);
+    }
+    if (key === 'englishProficiency') {
+      return !!(section.testType && section.score && section.dateOfTest);
+    }
+    if (key === 'fundingInfo') {
+      return !!(section.fundingType && section.details);
+    }
+    if (key === 'referees') {
+      return Array.isArray(section) && section.length >= 2; // Require at least 2 referees
+    }
+    if (key === 'documents') {
+      return !!(section.cv && section.sop && section.transcript && section.passport);
+    }
+    if (key === 'declaration') {
+      return !!(section.isAgreed && section.signature);
+    }
+
+    return false;
+  };
+
+  const isSectionPartial = (key) => {
+    const section = formData[key];
+    if (!section) return false;
+    if (isSectionComplete(key)) return false;
+
+    if (Array.isArray(section)) return section.length > 0;
+    const values = Object.values(section).filter(v => v !== null && v !== '' && v !== undefined && v !== false);
+    return values.length > 0;
+  };
+
   const saveCurrentSection = async () => {
-    const sections = [
-      'applicantInfo', 'contactDetails', 'guardianInfo', 'academicBackground', 
-      'programInfo', 'researchExperience', 'englishProficiency', 'fundingInfo', 
-      'referees', 'documents', 'declaration'
-    ];
-    
-    const currentSectionKey = sections[step - 1];
+    const currentSectionKey = steps[step - 1].key;
     setIsSaving(true);
     try {
       const response = await axios.put(`/api/applications/me/section/${currentSectionKey}`, formData[currentSectionKey]);
-      setFormData(response.data); // Update local data with saved data (including percentage)
+      setFormData(response.data); 
     } catch (err) {
       console.error('Error saving section');
     } finally {
@@ -82,7 +141,7 @@ const ApplicationForm = () => {
     if (step > 1) setStep(step - 1);
   };
 
-  if (loading) return <div>Loading Application...</div>;
+  if (loading) return <div className="container mt-20">Loading Application...</div>;
 
   return (
     <div className="application-form-container container mt-20 mb-20">
@@ -98,24 +157,60 @@ const ApplicationForm = () => {
               <h3 style={{ fontSize: '1.2rem' }}>Application Steps</h3>
             </div>
             <ul style={{ listStyle: 'none' }}>
-              {steps.map((s, index) => (
-                <li key={index} style={{ 
-                  padding: '15px 20px', borderBottom: index < steps.length - 1 ? '1px solid var(--border-color)' : 'none',
-                  display: 'flex', alignItems: 'center', gap: '10px',
-                  backgroundColor: step === index + 1 ? '#fee2e2' : 'transparent',
-                  color: step === index + 1 ? 'var(--primary-red)' : 'var(--text-main)',
-                  fontWeight: step === index + 1 ? 700 : 400,
-                  cursor: 'pointer'
-                }} onClick={() => setStep(index + 1)}>
-                  <div style={{ 
-                    width: '24px', height: '24px', borderRadius: '50%', backgroundColor: step > index + 1 ? 'var(--primary-red)' : '#ccc',
-                    color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '12px'
-                  }}>
-                    {step > index + 1 ? <CheckCircle size={14} /> : index + 1}
-                  </div>
-                  {s}
-                </li>
-              ))}
+              {steps.map((s, index) => {
+                const isActive = step === index + 1;
+                const isComplete = isSectionComplete(s.key);
+                const isPartial = isSectionPartial(s.key);
+                
+                let bgColor = 'transparent';
+                let borderColor = 'transparent';
+                let iconBg = '#e5e7eb';
+                let textColor = 'var(--text-muted)';
+
+                if (isActive) {
+                  bgColor = 'rgba(237, 28, 36, 0.05)';
+                  borderColor = 'var(--primary-red)';
+                  iconBg = 'var(--primary-red)';
+                  textColor = 'var(--primary-red)';
+                } else if (isComplete) {
+                  iconBg = 'var(--success)';
+                  textColor = 'var(--text-main)';
+                } else if (isPartial) {
+                  iconBg = 'var(--warning)';
+                  textColor = 'var(--text-main)';
+                  bgColor = 'rgba(255, 193, 7, 0.05)';
+                }
+
+                return (
+                  <li key={index} style={{ 
+                    padding: '15px 20px', 
+                    borderBottom: index < steps.length - 1 ? '1px solid var(--border-color)' : 'none',
+                    display: 'flex', alignItems: 'center', gap: '12px',
+                    backgroundColor: bgColor,
+                    borderLeft: `4px solid ${borderColor}`,
+                    color: textColor,
+                    fontWeight: isActive ? 700 : 400,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }} onClick={() => setStep(index + 1)}>
+                    <div style={{ 
+                      width: '28px', height: '28px', borderRadius: '50%', 
+                      backgroundColor: iconBg,
+                      color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '12px'
+                    }}>
+                      {isComplete ? <Check size={16} /> : s.icon}
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                       <span style={{ fontSize: '0.9rem' }}>{s.title}</span>
+                       {isComplete ? (
+                         <span style={{ fontSize: '0.7rem', color: 'var(--success)' }}>Completed</span>
+                       ) : isPartial ? (
+                         <span style={{ fontSize: '0.7rem', color: 'var(--warning)' }}>Incomplete</span>
+                       ) : null}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
@@ -124,7 +219,7 @@ const ApplicationForm = () => {
         <div className="form-content" style={{ flex: 3 }}>
           <div className="card">
             <div className="section-header mb-20 flex justify-between items-center" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '15px' }}>
-              <h2 style={{ fontSize: '1.5rem', color: 'var(--primary-red)' }}>{steps[step - 1]}</h2>
+              <h2 style={{ fontSize: '1.5rem', color: 'var(--primary-red)' }}>{steps[step - 1].title}</h2>
               <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Step {step} of 11</span>
             </div>
 
@@ -168,9 +263,9 @@ const ApplicationForm = () => {
                     Next <ChevronRight size={18} />
                   </button>
                 ) : (
-                  <button className="btn" style={{ backgroundColor: 'var(--success)', color: 'white', padding: '10px 25px' }}>
-                    Final Submission
-                  </button>
+                  <div style={{ color: 'var(--success)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}>
+                     Final Review Phase <Check size={20} />
+                  </div>
                 )}
               </div>
             </div>
