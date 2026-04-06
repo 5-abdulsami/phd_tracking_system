@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, GraduationCap, Globe, ShieldCheck, ArrowRight, CheckCircle2 } from 'lucide-react';
+import logo from '../assets/spectrum_logo.png';
 
 const HomePage = () => {
   return (
@@ -77,7 +78,7 @@ const HomePage = () => {
       {/* Footer (Simplified) */}
       <footer style={{ backgroundColor: 'var(--secondary-dark)', color: 'white', padding: '60px 0 20px 0' }}>
         <div className="container" style={{ textAlign: 'center' }}>
-          <img src="../assets/spectrum_logo.png" alt="Spectrum" style={{ height: '60px', marginBottom: '20px' }} />
+          <img src={logo} alt="Spectrum" style={{ height: '60px', marginBottom: '20px' }} />
           <p style={{ color: '#999', marginBottom: '40px' }}>Your Most Trusted Partner for Overseas Education.</p>
           <div style={{ borderTop: '1px solid #333', paddingTop: '20px', fontSize: '0.8rem', color: '#666' }}>
             &copy; 2026 Spectrum Overseas Education Consultants Pvt Ltd. All Rights Reserved.

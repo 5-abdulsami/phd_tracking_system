@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { LogOut, Bell, User as UserIcon } from 'lucide-react';
+import logo from '../../assets/spectrum_logo.png';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -23,7 +24,7 @@ const Navbar = () => {
     }}>
       <div className="container flex justify-between items-center">
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <img src="../assets/spectrum_logo.png" alt="Spectrum Consultants" style={{ height: '50px' }} />
+          <img src={logo} alt="Spectrum Consultants" style={{ height: '50px' }} />
           <div>
             <span style={{ fontWeight: 700, fontSize: '1.2rem', color: 'var(--secondary-dark)' }}>PHD</span>
             <span style={{ fontWeight: 400, fontSize: '1.2rem', color: 'var(--text-muted)' }}>TRACKING</span>
