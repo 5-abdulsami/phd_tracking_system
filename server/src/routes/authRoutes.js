@@ -1,7 +1,7 @@
 const express = require('express');
 const { check, validationResult } = require('express-validator');
-const { registerUser, authUser, getMe } = require('../controllers/authController');
-const { protect } = require('../middleware/authMiddleware');
+const { registerUser, authUser, getMe, createAdminUser } = require('../controllers/authController');
+const { protect, admin } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
@@ -50,5 +50,21 @@ router.post(
  * @desc    Get current user profile
  */
 router.get('/me', protect, getMe);
+
+/**
+ * @route   POST /api/auth/admin
+ * @desc    Create a new admin user
+ */
+router.post(
+  '/admin',
+  protect,
+  admin,
+  [
+    check('email', 'Please include a valid email').isEmail(),
+    check('password', 'Please enter a password with 6 or more characters').isLength({ min: 6 }),
+    validate
+  ],
+  createAdminUser
+);
 
 module.exports = router;

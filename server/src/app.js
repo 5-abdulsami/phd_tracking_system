@@ -7,6 +7,10 @@ const connectDB = require('./config/db');
 // Connect to Database
 connectDB();
 
+// Initialize Admin
+const { createInitialAdmin } = require('./utils/setup');
+createInitialAdmin();
+
 const app = express();
 
 // Middleware

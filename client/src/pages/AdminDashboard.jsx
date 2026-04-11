@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Users, FileText, CheckCircle, Clock, AlertCircle, BarChart3, TrendingUp } from 'lucide-react';
+import { Users, FileText, CheckCircle, Clock, AlertCircle, BarChart3, TrendingUp, ShieldAlert, ShieldCheck } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -12,6 +12,8 @@ const AdminDashboard = () => {
     recent: []
   });
   const [loading, setLoading] = useState(true);
+  const [adminForm, setAdminForm] = useState({ email: '', password: '' });
+  const [adminStatus, setAdminStatus] = useState({ loading: false, error: null, success: false });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,6 +45,31 @@ const AdminDashboard = () => {
     { label: 'Accepted', count: stats.accepted, icon: <CheckCircle size={24} />, color: '#10b981', bg: '#ecfdf5' },
     { label: 'Rejected', count: stats.rejected, icon: <AlertCircle size={24} />, color: '#ef4444', bg: '#fef2f2' },
   ];
+
+  const handleCreateAdmin = async (e) => {
+    e.preventDefault();
+    setAdminStatus({ loading: true, error: null, success: false });
+    try {
+      // Get token from localStorage to send in header
+      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      await axios.post('/api/auth/admin', adminForm, config);
+      setAdminStatus({ loading: false, error: null, success: true });
+      setAdminForm({ email: '', password: '' });
+      setTimeout(() => setAdminStatus(prev => ({ ...prev, success: false })), 3000);
+    } catch (err) {
+      setAdminStatus({ 
+        loading: false, 
+        error: err.response?.data?.message || 'Error creating admin', 
+        success: false 
+      });
+    }
+  };
 
   return (
     <div className="admin-dashboard container mt-20">
@@ -111,6 +138,47 @@ const AdminDashboard = () => {
                 <span style={{ fontWeight: 700 }}>+12%</span>
               </div>
             </div>
+          </div>
+          
+          <div className="card shadow-sm mt-20" style={{ borderTop: '4px solid #10b981' }}>
+            <h3 style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ShieldCheck size={18} color="#10b981" /> 
+              Create Admin User
+            </h3>
+            <form onSubmit={handleCreateAdmin} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+              <div>
+                <input 
+                  type="email" 
+                  placeholder="Admin Email" 
+                  required 
+                  value={adminForm.email}
+                  onChange={(e) => setAdminForm({...adminForm, email: e.target.value})}
+                  style={{ width: '100%', padding: '10px 15px', border: '1px solid #e5e7eb', borderRadius: '8px' }}
+                />
+              </div>
+              <div>
+                <input 
+                  type="password" 
+                  placeholder="Password (min 6 chars)" 
+                  required 
+                  minLength="6"
+                  value={adminForm.password}
+                  onChange={(e) => setAdminForm({...adminForm, password: e.target.value})}
+                  style={{ width: '100%', padding: '10px 15px', border: '1px solid #e5e7eb', borderRadius: '8px' }}
+                />
+              </div>
+              {adminStatus.error && <div style={{ color: '#ef4444', fontSize: '0.85rem' }}>{adminStatus.error}</div>}
+              {adminStatus.success && <div style={{ color: '#10b981', fontSize: '0.85rem' }}>Admin created successfully!</div>}
+              <button 
+                type="submit" 
+                disabled={adminStatus.loading}
+                style={{ 
+                  backgroundColor: '#10b981', color: 'white', padding: '10px', borderRadius: '8px', 
+                  border: 'none', cursor: adminStatus.loading ? 'not-allowed' : 'pointer', fontWeight: '600'
+                }}>
+                {adminStatus.loading ? 'Creating...' : 'Create Admin'}
+              </button>
+            </form>
           </div>
         </div>
       </div>

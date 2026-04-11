@@ -84,7 +84,7 @@ const ApplicationForm = () => {
       return !!(section.fundingType && section.details);
     }
     if (key === 'referees') {
-      return Array.isArray(section) && section.length >= 2; // Require at least 2 referees
+      return true; // Optional section
     }
     if (key === 'documents') {
       return !!(section.cv && section.sop && section.transcript && section.passport);
@@ -238,7 +238,7 @@ const ApplicationForm = () => {
                  <Declaration 
                    data={formData.declaration} 
                    updateData={updateFormData} 
-                   canSubmit={formData.completionPercentage >= 90}
+                   canSubmit={formData.completionPercentage === 100}
                    onSubmit={submitApplication}
                  />
                )}

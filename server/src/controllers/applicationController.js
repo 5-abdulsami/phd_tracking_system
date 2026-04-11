@@ -46,9 +46,49 @@ const updateSection = async (req, res) => {
     'referees', 'documents', 'declaration'
   ];
   
+  const isSectionComplete = (key, section) => {
+    if (!section) return false;
+
+    if (key === 'applicantInfo') {
+      return !!(section.firstName && section.lastName && section.dob && section.gender && section.nationality && section.cnic);
+    }
+    if (key === 'contactDetails') {
+      return !!(section.phone && section.email && section.address && section.city && section.country);
+    }
+    if (key === 'guardianInfo') {
+      return !!(section.fatherName && section.motherName && section.guardianPhone && section.guardianEmail && section.occupation);
+    }
+    if (key === 'academicBackground') {
+      return Array.isArray(section) && section.length > 0 && section.every(edu => edu.degree && edu.institution && edu.year && edu.cgpa);
+    }
+    if (key === 'programInfo') {
+      return !!(section.programType && section.proposedField && section.intakeYear);
+    }
+    if (key === 'researchExperience') {
+      return !!(section.workExperience && section.researchStatement);
+    }
+    if (key === 'englishProficiency') {
+      return !!(section.testType && section.score && section.dateOfTest);
+    }
+    if (key === 'fundingInfo') {
+      return !!(section.fundingType && section.details);
+    }
+    if (key === 'referees') {
+      return true; // Optional section
+    }
+    if (key === 'documents') {
+      return !!(section.cv && section.sop && section.transcript && section.passport);
+    }
+    if (key === 'declaration') {
+      return !!(section.isAgreed && section.signature);
+    }
+
+    return false;
+  };
+
   let filledCount = 0;
   sections.forEach(s => {
-    if (application[s] && (Array.isArray(application[s]) ? application[s].length > 0 : Object.keys(application[s]).length > 0)) {
+    if (isSectionComplete(s, application[s])) {
       filledCount++;
     }
   });
@@ -70,8 +110,8 @@ const submitApplication = async (req, res) => {
     return;
   }
 
-  if (application.completionPercentage < 90) { // Requirement to be mostly filled
-    res.status(400).json({ message: 'Please complete all sections before submitting' });
+  if (application.completionPercentage < 100) { // Requirement to be 100% filled
+    res.status(400).json({ message: 'Please complete all sections (100%) before submitting. The submission email will not be sent until fully completed.' });
     return;
   }
 
@@ -95,8 +135,16 @@ const submitApplication = async (req, res) => {
 // @route   GET /api/admin/applications
 // @access  Private (Admin)
 const getAllApplications = async (req, res) => {
-  const applications = await Application.find({}).populate('user', 'email');
-  res.json(applications);
+  const applications = await Application.find({}).populate({
+    path: 'user',
+    select: 'email role',
+    match: { role: 'student' }
+  });
+  
+  // Filter out any applications where user is null (because they didn't match the student role)
+  const filteredApps = applications.filter(app => app.user != null);
+  
+  res.json(filteredApps);
 };
 
 // @desc    Update application status

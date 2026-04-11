@@ -72,6 +72,37 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Create a new admin user
+// @route   POST /api/auth/admin
+// @access  Private/Admin
+const createAdminUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    res.status(400);
+    throw new Error('User already exists');
+  }
+
+  const user = await User.create({
+    email,
+    password,
+    role: 'admin',
+  });
+
+  if (user) {
+    res.status(201).json({
+      _id: user._id,
+      email: user.email,
+      role: user.role,
+    });
+  } else {
+    res.status(400);
+    throw new Error('Invalid user data');
+  }
+});
+
 // @desc    Get current user profile
 // @route   GET /api/auth/me
 // @access  Private
@@ -95,4 +126,5 @@ module.exports = {
   registerUser,
   authUser,
   getMe,
+  createAdminUser,
 };

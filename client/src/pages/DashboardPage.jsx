@@ -4,6 +4,46 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FileText, CheckCircle, Clock, AlertCircle, ArrowRight } from 'lucide-react';
 
+const isSectionComplete = (key, section) => {
+  if (!section) return false;
+
+  if (key === 'applicantInfo') {
+    return !!(section.firstName && section.lastName && section.dob && section.gender && section.nationality && section.cnic);
+  }
+  if (key === 'contactDetails') {
+    return !!(section.phone && section.email && section.address && section.city && section.country);
+  }
+  if (key === 'guardianInfo') {
+    return !!(section.fatherName && section.motherName && section.guardianPhone && section.guardianEmail && section.occupation);
+  }
+  if (key === 'academicBackground') {
+    return Array.isArray(section) && section.length > 0 && section.every(edu => edu.degree && edu.institution && edu.year && edu.cgpa);
+  }
+  if (key === 'programInfo') {
+    return !!(section.programType && section.proposedField && section.intakeYear);
+  }
+  if (key === 'researchExperience') {
+    return !!(section.workExperience && section.researchStatement);
+  }
+  if (key === 'englishProficiency') {
+    return !!(section.testType && section.score && section.dateOfTest);
+  }
+  if (key === 'fundingInfo') {
+    return !!(section.fundingType && section.details);
+  }
+  if (key === 'referees') {
+    return true; // Optional section
+  }
+  if (key === 'documents') {
+    return !!(section.cv && section.sop && section.transcript && section.passport);
+  }
+  if (key === 'declaration') {
+    return !!(section.isAgreed && section.signature);
+  }
+
+  return false;
+};
+
 const DashboardPage = () => {
   const [application, setApplication] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -128,7 +168,7 @@ const DashboardPage = () => {
                 { title: 'Document Uploads', key: 'documents' },
                 { title: 'Final Declaration', key: 'declaration' }
               ].map((s, idx) => {
-                const isDone = application?.[s.key] && (Array.isArray(application[s.key]) ? application[s.key].length > 0 : Object.keys(application[s.key]).length > 0);
+                const isDone = isSectionComplete(s.key, application?.[s.key]);
                 return (
                   <div key={idx} className="flex justify-between items-center" style={{ 
                     padding: '10px 15px', borderRadius: '6px', backgroundColor: isDone ? '#f0fdf4' : '#f9fafb',
