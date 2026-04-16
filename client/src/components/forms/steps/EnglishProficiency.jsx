@@ -42,6 +42,16 @@ const EnglishProficiency = ({ data, updateData }) => {
             style={{ borderColor: !data?.dateOfTest ? 'var(--primary-red)' : '' }}
           />
         </div>
+        <div className="form-group">
+          <label className="block mb-10 font-600">Date of Expiry <span style={{ color: 'red' }}>*</span></label>
+          <input 
+            type="date" 
+            name="expiryDate"
+            value={data?.expiryDate ? new Date(data.expiryDate).toISOString().split('T')[0] : ''} 
+            onChange={handleChange}
+            style={{ borderColor: !data?.expiryDate ? 'var(--primary-red)' : '' }}
+          />
+        </div>
       </div>
     </div>
   );

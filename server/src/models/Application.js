@@ -59,7 +59,10 @@ const applicationSchema = new mongoose.Schema({
   },
   // 6. Research & Professional Experience
   researchExperience: {
-    publications: [String],
+    publications: [{
+      title: String,
+      journalType: { type: String, enum: ['International', 'Local'] }
+    }],
     workExperience: String,
     researchStatement: String,
   },
@@ -68,6 +71,7 @@ const applicationSchema = new mongoose.Schema({
     testType: String,
     score: String,
     dateOfTest: Date,
+    expiryDate: Date,
     certificateUrl: String,
   },
   // 8. Funding Information
@@ -97,6 +101,10 @@ const applicationSchema = new mongoose.Schema({
     isAgreed: { type: Boolean, default: false },
     signature: String,
     date: Date,
+  },
+  profileStrength: {
+    type: Number,
+    default: 0,
   },
   submittedAt: Date,
 }, {

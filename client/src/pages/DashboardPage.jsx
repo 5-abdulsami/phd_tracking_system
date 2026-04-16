@@ -8,7 +8,7 @@ const isSectionComplete = (key, section) => {
   if (!section) return false;
 
   if (key === 'applicantInfo') {
-    return !!(section.firstName && section.lastName && section.dob && section.gender && section.nationality && section.cnic);
+    return !!(section.firstName && section.lastName && section.dob && section.gender && section.nationality);
   }
   if (key === 'contactDetails') {
     return !!(section.phone && section.email && section.address && section.city && section.country);
@@ -23,10 +23,12 @@ const isSectionComplete = (key, section) => {
     return !!(section.programType && section.proposedField && section.intakeYear);
   }
   if (key === 'researchExperience') {
-    return !!(section.workExperience && section.researchStatement);
+    const hasPublications = Array.isArray(section.publications) && section.publications.length > 0 && section.publications.every(p => p.title && p.journalType);
+    return !!(section.workExperience && hasPublications);
   }
   if (key === 'englishProficiency') {
-    return !!(section.testType && section.score && section.dateOfTest);
+    if (section.testType === 'Not Yet Taken') return true;
+    return !!(section.testType && section.score && section.dateOfTest && section.expiryDate);
   }
   if (key === 'fundingInfo') {
     return !!(section.fundingType && section.details);
@@ -35,7 +37,7 @@ const isSectionComplete = (key, section) => {
     return true; // Optional section
   }
   if (key === 'documents') {
-    return !!(section.cv && section.sop && section.transcript && section.passport);
+    return !!(section.cv);
   }
   if (key === 'declaration') {
     return !!(section.isAgreed && section.signature);
@@ -85,6 +87,13 @@ const DashboardPage = () => {
 
   const status = getStatusDisplay(application?.status);
 
+  // Helper for color based on percentage
+  const getStrengthColor = (percent) => {
+    if (percent >= 80) return '#10b981';
+    if (percent >= 50) return '#f59e0b';
+    return '#ef4444';
+  };
+
   return (
     <div className="dashboard-page container mt-20">
       <div className="welcome-header flex justify-between items-center mb-20" style={{ padding: '0 0 20px 0', borderBottom: '1px solid var(--border-color)' }}>
@@ -107,7 +116,7 @@ const DashboardPage = () => {
             <div className="progress-container" style={{ position: 'relative', marginBottom: '30px' }}>
               <div style={{ backgroundColor: '#e5e7eb', height: '12px', borderRadius: '6px' }}>
                 <div style={{ 
-                  backgroundColor: 'var(--primary-red)', height: '100%', borderRadius: '6px',
+                   backgroundColor: 'var(--primary-red)', height: '100%', borderRadius: '6px',
                   width: `${application?.completionPercentage || 0}%`, transition: 'width 0.5s ease-in-out'
                 }}></div>
               </div>
@@ -117,7 +126,7 @@ const DashboardPage = () => {
             </div>
             
             <p style={{ marginBottom: '20px', color: 'var(--text-muted)' }}>
-              Complete all 11 sections of your application to submit for review.
+              Complete all mandatory sections to submit your application.
             </p>
 
             <button 
@@ -130,15 +139,26 @@ const DashboardPage = () => {
           </div>
 
           <div className="dashboard-sections grid gap-20" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
-            <div className="card" style={{ display: 'flex', gap: '15px' }}>
-              <div style={{ backgroundColor: '#fee2e2', padding: '10px', borderRadius: '8px', color: 'var(--primary-red)' }}>
-                <FileText size={24} />
+            <div className="card" style={{ display: 'flex', gap: '15px', borderLeft: `5px solid ${getStrengthColor(application?.profileStrength || 0)}` }}>
+              <div style={{ backgroundColor: '#f0fdf4', padding: '10px', borderRadius: '8px', color: getStrengthColor(application?.profileStrength || 0) }}>
+                <CheckCircle size={24} />
               </div>
-              <div>
-                <h4 style={{ fontSize: '1rem', marginBottom: '5px' }}>Form Sections</h4>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>11 sections requiring your academic & personal details.</p>
+              <div style={{ flex: 1 }}>
+                <h4 style={{ fontSize: '1rem', marginBottom: '5px' }}>Profile Strength</h4>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ flex: 1, backgroundColor: '#e5e7eb', height: '8px', borderRadius: '4px' }}>
+                    <div style={{ 
+                      backgroundColor: getStrengthColor(application?.profileStrength || 0), 
+                      width: `${application?.profileStrength || 0}%`, 
+                      height: '100%', borderRadius: '4px' 
+                    }}></div>
+                  </div>
+                  <span style={{ fontWeight: 700, minWidth: '40px' }}>{application?.profileStrength || 0}%</span>
+                </div>
+                <p style={{ fontSize: '0.75rem', marginTop: '5px', color: 'var(--text-muted)' }}>Based on CGPA, Publications, and Age.</p>
               </div>
             </div>
+           
             <div className="card" style={{ display: 'flex', gap: '15px' }}>
               <div style={{ backgroundColor: '#e0f2fe', padding: '10px', borderRadius: '8px', color: '#0ea5e9' }}>
                 <CheckCircle size={24} />

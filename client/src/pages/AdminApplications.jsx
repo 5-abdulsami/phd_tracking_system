@@ -103,6 +103,7 @@ const AdminApplications = () => {
             <tr style={{ textAlign: 'left', backgroundColor: '#f9fafb', borderBottom: '1px solid #eee' }}>
               <th style={{ padding: '15px 20px' }}>Student Email</th>
               <th style={{ padding: '15px 20px' }}>Program</th>
+              <th style={{ padding: '15px 20px' }}>Strength</th>
               <th style={{ padding: '15px 20px' }}>Progress</th>
               <th style={{ padding: '15px 20px' }}>Status</th>
               <th style={{ padding: '15px 20px', textAlign: 'right' }}>Actions</th>
@@ -118,6 +119,17 @@ const AdminApplications = () => {
               >
                 <td style={{ padding: '15px 20px', fontWeight: 600 }}>{app.user?.email}</td>
                 <td style={{ padding: '15px 20px' }}>{app.programInfo?.programType || 'N/A'}</td>
+                <td style={{ padding: '15px 20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: '40px', backgroundColor: '#eee', height: '6px', borderRadius: '3px' }}>
+                      <div style={{ 
+                        backgroundColor: app.profileStrength >= 80 ? '#10b981' : app.profileStrength >= 50 ? '#f59e0b' : '#ef4444', 
+                        height: '100%', width: `${app.profileStrength || 0}%`, borderRadius: '3px' 
+                      }}></div>
+                    </div>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{app.profileStrength || 0}%</span>
+                  </div>
+                </td>
                 <td style={{ padding: '15px 20px' }}>
                    <div style={{ width: '100px', backgroundColor: '#eee', height: '6px', borderRadius: '3px' }}>
                       <div style={{ backgroundColor: 'var(--primary-red)', height: '100%', width: `${app.completionPercentage}%`, borderRadius: '3px' }}></div>

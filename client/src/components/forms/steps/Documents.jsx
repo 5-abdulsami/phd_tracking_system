@@ -36,9 +36,9 @@ const Documents = ({ data = {}, updateData }) => {
 
   const docTypes = [
     { key: 'cv', label: 'CV / Resume', required: true },
-    { key: 'sop', label: 'Statement of Purpose (SOP)', required: true },
-    { key: 'transcript', label: 'Academic Transcripts', required: true },
-    { key: 'passport', label: 'Passport / ID Copy', required: true },
+    { key: 'sop', label: 'Statement of Purpose (SOP)', required: false },
+    { key: 'transcript', label: 'Academic Transcripts', required: false },
+    { key: 'passport', label: 'Passport / ID Copy', required: false },
     { key: 'englishCert', label: 'English Proficiency Certificate', required: false },
   ];
 

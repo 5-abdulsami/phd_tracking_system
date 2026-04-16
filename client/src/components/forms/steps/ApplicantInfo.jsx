@@ -66,17 +66,21 @@ const ApplicantInfo = ({ data, updateData }) => {
           />
         </div>
         <div className="form-group">
-          <label className="block mb-10 font-600">CNIC / Passport Number <span style={{ color: 'red' }}>*</span></label>
+          <label className="block mb-10 font-600">CNIC / Passport Number</label>
           <input 
             type="text" 
             name="cnic"
             value={data?.cnic || ''} 
             onChange={handleChange}
-            placeholder="Enter CNIC or Passport" 
-            style={{ borderColor: isInvalid(data?.cnic) ? 'var(--primary-red)' : '' }}
+            placeholder="Enter CNIC or Passport (Optional)" 
           />
         </div>
       </div>
+      {data?.dob && (new Date().getFullYear() - new Date(data.dob).getFullYear() > 45) && (
+        <div className="alert alert-warning mt-20" style={{ backgroundColor: '#fff7ed', padding: '15px', borderRadius: '8px', border: '1px solid #fb923c', color: '#9a3412', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontWeight: 700 }}>⚠️ Note:</span> Age limit for PhD students is 45. Your profile strength will be impacted.
+        </div>
+      )}
     </div>
   );
 };

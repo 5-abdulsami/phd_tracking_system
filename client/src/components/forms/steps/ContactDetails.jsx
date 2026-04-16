@@ -8,7 +8,7 @@ const ContactDetails = ({ data, updateData }) => {
 
   const isInvalid = (val) => !val || val.trim() === '';
   const isEmailInvalid = (val) => !val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-  const isPhoneInvalid = (val) => !val || !/^\+?\d{10,15}$/.test(val.replace(/\s/g, ''));
+  const isPhoneInvalid = (val) => !val || !/^\+?\d{10,14}$/.test(val.replace(/[^\d]/g, ''));
 
   return (
     <div className="section-form">

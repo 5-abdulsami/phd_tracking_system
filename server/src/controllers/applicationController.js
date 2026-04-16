@@ -50,7 +50,7 @@ const updateSection = async (req, res) => {
     if (!section) return false;
 
     if (key === 'applicantInfo') {
-      return !!(section.firstName && section.lastName && section.dob && section.gender && section.nationality && section.cnic);
+      return !!(section.firstName && section.lastName && section.dob && section.gender && section.nationality);
     }
     if (key === 'contactDetails') {
       return !!(section.phone && section.email && section.address && section.city && section.country);
@@ -65,10 +65,12 @@ const updateSection = async (req, res) => {
       return !!(section.programType && section.proposedField && section.intakeYear);
     }
     if (key === 'researchExperience') {
-      return !!(section.workExperience && section.researchStatement);
+      const hasPublications = Array.isArray(section.publications) && section.publications.length > 0 && section.publications.every(p => p.title && p.journalType);
+      return !!(section.workExperience && hasPublications);
     }
     if (key === 'englishProficiency') {
-      return !!(section.testType && section.score && section.dateOfTest);
+      if (section.testType === 'Not Yet Taken') return true;
+      return !!(section.testType && section.score && section.dateOfTest && section.expiryDate);
     }
     if (key === 'fundingInfo') {
       return !!(section.fundingType && section.details);
@@ -77,13 +79,49 @@ const updateSection = async (req, res) => {
       return true; // Optional section
     }
     if (key === 'documents') {
-      return !!(section.cv && section.sop && section.transcript && section.passport);
+      return !!(section.cv);
     }
     if (key === 'declaration') {
       return !!(section.isAgreed && section.signature);
     }
 
     return false;
+  };
+
+  const calculateProfileStrength = (app) => {
+    let score = 0;
+    
+    // 1. Age Limit (25%)
+    if (app.applicantInfo?.dob) {
+      const age = new Date().getFullYear() - new Date(app.applicantInfo.dob).getFullYear();
+      if (age <= 45) score += 25;
+    }
+
+    // 2. Publications (25%) - At least one in international journal
+    if (app.researchExperience?.publications) {
+      const hasInternational = app.researchExperience.publications.some(p => p.journalType === 'International');
+      if (hasInternational) score += 25;
+    }
+
+    // 3. CGPA (25%) - Good CGPA >= 3.5, Acceptable > 3.0
+    if (app.academicBackground && app.academicBackground.length > 0) {
+      // Get the highest degree CGPA or most recent
+      const lastDegree = app.academicBackground[app.academicBackground.length - 1];
+      const cgpa = parseFloat(lastDegree.cgpa);
+      if (cgpa >= 3.5) score += 25;
+      else if (cgpa > 3.0) score += 15;
+    }
+
+    // 4. Study Gap (25%) - Acceptable 5 to 7 years
+    if (app.academicBackground && app.academicBackground.length > 0) {
+      const lastDegree = app.academicBackground[app.academicBackground.length - 1];
+      const gradYear = parseInt(lastDegree.year);
+      const currentYear = new Date().getFullYear();
+      const gap = currentYear - gradYear;
+      if (gap <= 7) score += 25;
+    }
+
+    return score;
   };
 
   let filledCount = 0;
@@ -94,6 +132,7 @@ const updateSection = async (req, res) => {
   });
   
   application.completionPercentage = Math.round((filledCount / sections.length) * 100);
+  application.profileStrength = calculateProfileStrength(application);
 
   const updatedApplication = await application.save();
   res.json(updatedApplication);

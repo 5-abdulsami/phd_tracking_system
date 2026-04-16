@@ -92,6 +92,9 @@ const AcademicBackground = ({ data = [], updateData }) => {
                 placeholder="e.g. 3.8/4.0" 
                 style={{ borderColor: isGPAInvalid(item.cgpa) ? 'var(--primary-red)' : '' }}
               />
+              <p style={{ fontSize: '0.75rem', color: '#666', marginTop: '5px' }}>
+                * Above 3.0 is acceptable; 3.5+ is recommended for scholarship.
+              </p>
             </div>
           </div>
         </div>
