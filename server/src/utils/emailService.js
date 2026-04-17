@@ -34,20 +34,49 @@ const sendSubmissionEmail = async (application) => {
       }
     }
 
+    const formatDate = (date) => {
+      if (!date) return 'N/A';
+      return new Date(date).toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      });
+    };
+
     // 2. Format HTML Data Table
     const formatSection = (title, data) => {
       if (!data) return '';
       let rows = '';
       for (const [key, value] of Object.entries(data)) {
-        if (key === '_id' || key === 'id') continue;
+        if (key === '_id' || key === 'id' || key === 'photo') continue; // Remove photo row
+        
         const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-        const displayValue = Array.isArray(value) ? value.join(', ') : (typeof value === 'object' ? JSON.stringify(value) : value);
+        let displayValue = value;
+
+        // Custom formatting for dates
+        if (key === 'dob' || key === 'dateOfTest' || key === 'expiryDate' || key === 'date') {
+          displayValue = formatDate(value);
+        } else if (key === 'publications' && Array.isArray(value)) {
+          // Custom formatting for publications array of objects
+          displayValue = value.map(p => `${p.title} (${p.journalType})`).join(', ');
+        } else if (Array.isArray(value)) {
+          displayValue = value.join(', ');
+        } else if (typeof value === 'object') {
+          displayValue = JSON.stringify(value);
+        }
+
         rows += `<tr><td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; width: 30%;">${label}</td><td style="padding: 8px; border: 1px solid #ddd;">${displayValue || 'N/A'}</td></tr>`;
       }
       return `
         <h3 style="color: #ED1C24; margin-top: 25px; border-bottom: 2px solid #eee; padding-bottom: 5px;">${title}</h3>
         <table style="width: 100%; border-collapse: collapse; font-size: 14px;">${rows}</table>
       `;
+    };
+
+    // Prepare Declaration Data with Submission Date
+    const declarationData = {
+      ...application.declaration,
+      submissionDate: application.submittedAt
     };
 
     const htmlContent = `
@@ -59,7 +88,7 @@ const sendSubmissionEmail = async (application) => {
         
         <div style="padding: 20px;">
           <h2 style="color: #333;">Full Application Details: ${applicantName}</h2>
-          <p>A new application was submitted on ${new Date(application.submittedAt).toLocaleString()}.</p>
+          <p>A new application was submitted on <strong>${formatDate(application.submittedAt)}</strong> at ${new Date(application.submittedAt).toLocaleTimeString()}.</p>
           
           ${formatSection('Applicant Info', application.applicantInfo)}
           ${formatSection('Contact Details', application.contactDetails)}
@@ -101,7 +130,7 @@ const sendSubmissionEmail = async (application) => {
             </div>
           `).join('') || 'No referees'}
 
-          ${formatSection('Declaration', application.declaration)}
+          ${formatSection('Declaration', declarationData)}
         </div>
         
         <div style="background-color: #333; color: #fff; padding: 20px; text-align: center; border-radius: 0 0 8px 8px;">

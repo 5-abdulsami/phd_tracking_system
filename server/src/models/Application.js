@@ -94,6 +94,7 @@ const applicationSchema = new mongoose.Schema({
     sop: String,
     transcript: String,
     passport: String,
+    englishCert: String,
     others: [String],
   },
   // 11. Declaration & Final Submission

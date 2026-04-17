@@ -1,8 +1,17 @@
 import React from 'react';
+import { countries } from '../../../utils/countries';
 
 const ContactDetails = ({ data, updateData }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Numeric/Special only for phone
+    if (name === 'phone' || name === 'alternatePhone') {
+      const formattedValue = value.replace(/[^\d+]/g, '');
+      updateData('contactDetails', { ...data, [name]: formattedValue });
+      return;
+    }
+
     updateData('contactDetails', { ...data, [name]: value });
   };
 
@@ -71,14 +80,15 @@ const ContactDetails = ({ data, updateData }) => {
         </div>
         <div className="form-group">
           <label className="block mb-10 font-600">Country <span style={{ color: 'red' }}>*</span></label>
-          <input 
-            type="text" 
-            name="country"
+          <select 
+            name="country" 
             value={data?.country || ''} 
-            onChange={handleChange}
-            placeholder="Enter country" 
-            style={{ borderColor: isInvalid(data?.country) ? 'var(--primary-red)' : '' }}
-          />
+            onChange={handleChange} 
+            style={{ borderColor: !data?.country ? 'var(--primary-red)' : '' }}
+          >
+            <option value="">Select Country</option>
+            {countries.map(country => <option key={country} value={country}>{country}</option>)}
+          </select>
         </div>
       </div>
     </div>

@@ -60,7 +60,9 @@ const ApplicationForm = () => {
     if (!section) return false;
 
     if (key === 'applicantInfo') {
-      return !!(section.firstName && section.lastName && section.dob && section.gender && section.nationality && section.cnic);
+      return !!(section.firstName && section.firstName.length >= 3 && 
+                section.lastName && section.lastName.length >= 3 && 
+                section.dob && section.gender && section.nationality);
     }
     if (key === 'contactDetails') {
       return !!(section.phone && section.email && section.address && section.city && section.country);
@@ -75,10 +77,12 @@ const ApplicationForm = () => {
       return !!(section.programType && section.proposedField && section.intakeYear);
     }
     if (key === 'researchExperience') {
-      return !!(section.workExperience && section.researchStatement);
+      const hasPublications = Array.isArray(section.publications) && section.publications.length > 0 && section.publications.every(p => p.title && p.journalType);
+      return !!(section.workExperience && hasPublications);
     }
     if (key === 'englishProficiency') {
-      return !!(section.testType && section.score && section.dateOfTest);
+      if (section.testType === 'Not Yet Taken') return true;
+      return !!(section.testType && section.score && section.dateOfTest && section.expiryDate);
     }
     if (key === 'fundingInfo') {
       return !!(section.fundingType && section.details);
@@ -87,13 +91,19 @@ const ApplicationForm = () => {
       return true; // Optional section
     }
     if (key === 'documents') {
-      return !!(section.cv && section.sop && section.transcript && section.passport);
+      return !!(section.cv);
     }
     if (key === 'declaration') {
       return !!(section.isAgreed && section.signature);
     }
 
     return false;
+  };
+
+  const getIncompleteSections = () => {
+    return steps
+      .filter(s => s.key !== 'declaration' && !isSectionComplete(s.key))
+      .map(s => s.title);
   };
 
   const isSectionPartial = (key) => {
@@ -239,6 +249,7 @@ const ApplicationForm = () => {
                    data={formData.declaration} 
                    updateData={updateFormData} 
                    canSubmit={formData.completionPercentage === 100}
+                   incompleteSections={getIncompleteSections()}
                    onSubmit={submitApplication}
                  />
                )}

@@ -50,7 +50,7 @@ const updateSection = async (req, res) => {
     if (!section) return false;
 
     if (key === 'applicantInfo') {
-      return !!(section.firstName && section.lastName && section.dob && section.gender && section.nationality);
+      return !!(section.firstName && section.firstName.length >= 3 && section.lastName && section.lastName.length >= 3 && section.dob && section.gender && section.nationality);
     }
     if (key === 'contactDetails') {
       return !!(section.phone && section.email && section.address && section.city && section.country);

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Declaration = ({ data = {}, updateData, canSubmit, onSubmit }) => {
+const Declaration = ({ data = {}, updateData, canSubmit, incompleteSections = [], onSubmit }) => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     updateData('declaration', { ...data, [name]: type === 'checkbox' ? checked : value });
@@ -51,6 +51,27 @@ const Declaration = ({ data = {}, updateData, canSubmit, onSubmit }) => {
       </div>
 
       <div style={{ textAlign: 'center', marginTop: '40px' }}>
+        {(!data?.isAgreed || isInvalid(data?.signature) || !canSubmit) && (
+           <div className="alert alert-danger mb-20" style={{ 
+             backgroundColor: '#fef2f2', border: '1px solid #fee2e2', 
+             padding: '20px', borderRadius: '8px', textAlign: 'left' 
+           }}>
+             <h4 style={{ color: '#dc2626', marginBottom: '10px', fontSize: '1rem' }}>⚠️ Application Incomplete</h4>
+             <ul style={{ color: '#991b1b', fontSize: '0.85rem', paddingLeft: '20px' }}>
+               {!canSubmit && incompleteSections.length > 0 && (
+                 <li>The following sections are missing mandatory information:
+                   <ul style={{ fontWeight: 600, marginTop: '5px' }}>
+                     {incompleteSections.map(s => <li key={s}>{s}</li>)}
+                   </ul>
+                 </li>
+               )}
+               {(!data?.isAgreed || isInvalid(data?.signature)) && (
+                 <li style={{ marginTop: '5px' }}>Please check the declaration box and provide your full signature.</li>
+               )}
+             </ul>
+           </div>
+        )}
+
         <button 
           onClick={onSubmit}
           disabled={!data?.isAgreed || isInvalid(data?.signature) || !canSubmit}
@@ -63,13 +84,6 @@ const Declaration = ({ data = {}, updateData, canSubmit, onSubmit }) => {
         >
           Submit Final Application
         </button>
-        {(!data?.isAgreed || isInvalid(data?.signature) || !canSubmit) && (
-           <p style={{ color: 'var(--primary-red)', marginTop: '15px', fontSize: '0.9rem', fontWeight: 600 }}>
-             {!canSubmit 
-               ? `Please complete all mandatory fields in previous sections first.`
-               : "Please check the declaration and provide your signature to submit."}
-           </p>
-        )}
       </div>
     </div>
   );

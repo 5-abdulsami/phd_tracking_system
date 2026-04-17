@@ -3,6 +3,14 @@ import React from 'react';
 const EnglishProficiency = ({ data, updateData }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    // Numeric and dot only for score
+    if (name === 'score') {
+      const formattedValue = value.replace(/[^\d.]/g, '');
+      updateData('englishProficiency', { ...data, [name]: formattedValue });
+      return;
+    }
+
     updateData('englishProficiency', { ...data, [name]: value });
   };
 

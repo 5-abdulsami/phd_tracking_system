@@ -4,6 +4,25 @@ import { Plus, Trash2 } from 'lucide-react';
 const AcademicBackground = ({ data = [], updateData }) => {
   const handleChange = (index, e) => {
     const { name, value } = e.target;
+    
+    // Numeric only for year
+    if (name === 'year') {
+      const numericValue = value.replace(/[^\d]/g, '').slice(0, 4);
+      const updatedList = [...data];
+      updatedList[index] = { ...updatedList[index], [name]: numericValue };
+      updateData('academicBackground', updatedList);
+      return;
+    }
+
+    // Numeric and dot only for CGPA
+    if (name === 'cgpa') {
+      const formattedValue = value.replace(/[^\d./]/g, ''); // Allow /, dot, and digits
+      const updatedList = [...data];
+      updatedList[index] = { ...updatedList[index], [name]: formattedValue };
+      updateData('academicBackground', updatedList);
+      return;
+    }
+
     const updatedList = [...data];
     updatedList[index] = { ...updatedList[index], [name]: value };
     updateData('academicBackground', updatedList);

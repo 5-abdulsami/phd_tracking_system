@@ -4,9 +4,9 @@ const createInitialAdmin = async () => {
   try {
     const adminCount = await User.countDocuments({ role: 'admin' });
     if (adminCount === 0) {
-      const email = process.env.INITIAL_ADMIN_EMAIL || 'admin@example.com';
-      const password = process.env.INITIAL_ADMIN_PASSWORD || 'admin123';
-      
+      const email = process.env.INITIAL_ADMIN_EMAIL || 'spectrumgujranwala@gmail.com';
+      const password = process.env.INITIAL_ADMIN_PASSWORD || 'admin@123';
+
       const adminUser = await User.create({
         email: email,
         password: password,
