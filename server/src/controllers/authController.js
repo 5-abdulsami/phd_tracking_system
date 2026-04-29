@@ -42,6 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       email: user.email,
       role: user.role,
+      designation: user.designation,
       token: generateToken(user._id),
     });
   } else {
@@ -64,6 +65,7 @@ const authUser = asyncHandler(async (req, res) => {
       _id: user._id,
       email: user.email,
       role: user.role,
+      designation: user.designation,
       token: generateToken(user._id),
     });
   } else {
@@ -76,7 +78,7 @@ const authUser = asyncHandler(async (req, res) => {
 // @route   POST /api/auth/admin
 // @access  Private/Admin
 const createAdminUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, designation } = req.body;
 
   const userExists = await User.findOne({ email });
 
@@ -89,6 +91,7 @@ const createAdminUser = asyncHandler(async (req, res) => {
     email,
     password,
     role: 'admin',
+    designation: designation || 'Admin',
   });
 
   if (user) {
@@ -96,6 +99,7 @@ const createAdminUser = asyncHandler(async (req, res) => {
       _id: user._id,
       email: user.email,
       role: user.role,
+      designation: user.designation,
     });
   } else {
     res.status(400);
@@ -115,6 +119,7 @@ const getMe = asyncHandler(async (req, res) => {
       _id: user._id,
       email: user.email,
       role: user.role,
+      designation: user.designation,
     });
   } else {
     res.status(404);

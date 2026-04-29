@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { FileText, CheckCircle, Clock, AlertCircle, ArrowRight } from 'lucide-react';
+import { FileText, CheckCircle, Clock, AlertCircle, ArrowRight, MessageSquare } from 'lucide-react';
+import RemarksSection from '../components/RemarksSection';
 
 const isSectionComplete = (key, section) => {
   if (!section) return false;
@@ -169,6 +170,11 @@ const DashboardPage = () => {
               </div>
             </div>
           </div>
+
+          {/* Remarks Section for Student */}
+          {application?._id && (
+            <RemarksSection applicationId={application._id} currentUser={user} />
+          )}
         </div>
 
         <div className="sidebar" style={{ flex: 1 }}>

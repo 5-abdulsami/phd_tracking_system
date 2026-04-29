@@ -175,4 +175,46 @@ const sendSubmissionEmail = async (application) => {
   }
 };
 
-module.exports = { sendSubmissionEmail };
+const sendRemarkNotification = async (studentEmail, content, applicationId) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Spectrum PhD Admissions" <${process.env.GMAIL_USER}>`,
+      to: studentEmail,
+      subject: 'New Remark on Your PhD Application - Spectrum Consultants',
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; border: 1px solid #eee; border-radius: 8px;">
+          <h2 style="color: #ED1C24;">New Remark Received</h2>
+          <p>Dear Applicant,</p>
+          <p>A new comment or update has been posted on your PhD application. Please log in to your dashboard to view the full details and respond if necessary.</p>
+          
+          <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #ED1C24; margin: 20px 0;">
+            <strong>Comment:</strong><br/>
+            <p style="white-space: pre-wrap;">${content}</p>
+          </div>
+          
+          <p>Click the link below to go to your dashboard:</p>
+          <a href="${process.env.CLIENT_URL || 'http://localhost:5173'}/dashboard" style="display: inline-block; padding: 10px 20px; background-color: #ED1C24; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold;">View Dashboard</a>
+          
+          <br/><br/>
+          <p>Best Regards,<br/>PhD Admissions Team<br/>Spectrum Consultants</p>
+        </div>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log('Remark notification email sent to:', studentEmail);
+  } catch (error) {
+    console.error('Error sending remark notification email:', error);
+  }
+};
+
+module.exports = { sendSubmissionEmail, sendRemarkNotification };
+

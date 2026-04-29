@@ -13,7 +13,8 @@ const NotificationsPage = () => {
   const fetchNotifications = async () => {
     try {
       const { data } = await axios.get('/api/notifications');
-      setNotifications(data);
+      const sortedData = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setNotifications(sortedData);
     } catch (err) {
       console.error('Error fetching notifications');
     } finally {

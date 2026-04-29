@@ -29,6 +29,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/applications', require('./routes/applicationRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api/upload', require('./routes/uploadRoutes'));
+app.use('/api/remarks', require('./routes/remarkRoutes'));
 
 app.get('/', (req, res) => {
   res.send('PhD Tracking System API is running...');

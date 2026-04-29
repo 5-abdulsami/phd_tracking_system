@@ -4,12 +4,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   ChevronLeft, Download, User, Mail, Phone, MapPin,
   GraduationCap, BookOpen, FlaskConical, Languages,
-  BadgeDollarSign, Star, FileText, CheckCircle, Clock, XCircle, Users
+  BadgeDollarSign, Star, FileText, CheckCircle, Clock, XCircle, Users, MessageSquare
 } from 'lucide-react';
+import RemarksSection from '../components/RemarksSection';
+import { useAuth } from '../contexts/AuthContext';
 
 const AdminApplicationDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user: currentUser } = useAuth();
   const [application, setApplication] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -166,6 +169,9 @@ const AdminApplicationDetail = () => {
               )) : <div style={{ color: '#999' }}>No referees listed.</div>}
             </div>
           ))}
+
+          {/* Remarks/Comments Section */}
+          <RemarksSection applicationId={id} currentUser={currentUser} />
         </div>
 
         <div style={{ flex: 1 }}>

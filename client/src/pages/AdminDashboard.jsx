@@ -12,7 +12,7 @@ const AdminDashboard = () => {
     recent: []
   });
   const [loading, setLoading] = useState(true);
-  const [adminForm, setAdminForm] = useState({ email: '', password: '' });
+  const [adminForm, setAdminForm] = useState({ email: '', password: '', designation: '' });
   const [adminStatus, setAdminStatus] = useState({ loading: false, error: null, success: false });
   const navigate = useNavigate();
 
@@ -60,7 +60,7 @@ const AdminDashboard = () => {
       };
       await axios.post('/api/auth/admin', adminForm, config);
       setAdminStatus({ loading: false, error: null, success: true });
-      setAdminForm({ email: '', password: '' });
+      setAdminForm({ email: '', password: '', designation: '' });
       setTimeout(() => setAdminStatus(prev => ({ ...prev, success: false })), 3000);
     } catch (err) {
       setAdminStatus({ 
@@ -155,6 +155,20 @@ const AdminDashboard = () => {
                   onChange={(e) => setAdminForm({...adminForm, email: e.target.value})}
                   style={{ width: '100%', padding: '10px 15px', border: '1px solid #e5e7eb', borderRadius: '8px' }}
                 />
+              </div>
+              <div>
+                <select 
+                  required
+                  value={adminForm.designation}
+                  onChange={(e) => setAdminForm({...adminForm, designation: e.target.value})}
+                  style={{ width: '100%', padding: '10px 15px', border: '1px solid #e5e7eb', borderRadius: '8px' }}
+                >
+                  <option value="" disabled>Select Designation</option>
+                  <option value="Counsellor">Counsellor</option>
+                  <option value="Professor">Professor</option>
+                  <option value="Admissions Officer">Admissions Officer</option>
+                  <option value="Senior Admin">Senior Admin</option>
+                </select>
               </div>
               <div>
                 <input 

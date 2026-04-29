@@ -6,15 +6,15 @@ const storage = multer.memoryStorage();
 const upload = multer({
   storage,
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
+    fileSize: 15 * 1024 * 1024, // 15MB limit
   },
   fileFilter: (req, file, cb) => {
-    const filetypes = /jpeg|jpg|png|pdf/;
+    const filetypes = /jpeg|jpg|png|pdf|webp|gif/;
     const mimetype = filetypes.test(file.mimetype);
     if (mimetype) {
       return cb(null, true);
     }
-    cb(new Error('Only images (jpg, png) and PDFs are allowed'));
+    cb(new Error('Only images (jpg, png, webp, gif) and PDFs are allowed'));
   },
 });
 

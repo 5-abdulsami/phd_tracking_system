@@ -10,7 +10,8 @@ const createInitialAdmin = async () => {
       const adminUser = await User.create({
         email: email,
         password: password,
-        role: 'admin'
+        role: 'admin',
+        designation: 'Senior Admin'
       });
       console.log(`Initial admin user created with email: ${email}`);
     }

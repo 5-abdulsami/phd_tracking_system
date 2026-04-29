@@ -104,8 +104,10 @@ input:focus, textarea:focus, select:focus {
 }
 
 .flex { display: flex; }
+.flex-col { flex-direction: column; }
 .justify-between { justify-content: space-between; }
 .items-center { align-items: center; }
+.items-start { align-items: flex-start; }
 .gap-10 { gap: 10px; }
 .gap-20 { gap: 20px; }
 .mt-20 { margin-top: 20px; }

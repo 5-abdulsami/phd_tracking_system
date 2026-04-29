@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import { LogOut, Bell, User as UserIcon } from 'lucide-react';
 import logo from '../../assets/spectrum_logo.png';
@@ -7,6 +8,26 @@ import logo from '../../assets/spectrum_logo.png';
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (user) {
+      fetchUnreadCount();
+      // Polling for new notifications every 30 seconds
+      const interval = setInterval(fetchUnreadCount, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [user]);
+
+  const fetchUnreadCount = async () => {
+    try {
+      const { data } = await axios.get('/api/notifications');
+      const unread = data.filter(n => !n.isRead).length;
+      setUnreadCount(unread);
+    } catch (err) {
+      console.error('Error fetching unread count');
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -42,11 +63,16 @@ const Navbar = () => {
 
               <Link to="/notifications" style={{ position: 'relative' }}>
                 <Bell size={20} color="var(--secondary-dark)" />
-                <span className="badge" style={{
-                  position: 'absolute', top: '-5px', right: '-5px',
-                  backgroundColor: 'var(--primary-red)', color: 'white',
-                  borderRadius: '50%', padding: '2px 5px', fontSize: '10px'
-                }}>0</span>
+                {unreadCount > 0 && (
+                  <span className="badge" style={{
+                    position: 'absolute', top: '-5px', right: '-5px',
+                    backgroundColor: 'var(--primary-red)', color: 'white',
+                    borderRadius: '50%', padding: '2px 6px', fontSize: '10px',
+                    fontWeight: 'bold', minWidth: '18px', textAlign: 'center'
+                  }}>
+                    {unreadCount}
+                  </span>
+                )}
               </Link>
 
               <div className="user-profile flex items-center gap-10">
