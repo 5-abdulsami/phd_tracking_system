@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import axios from '../utils/axios';
 import { Send, Paperclip, Download, User, MessageSquare, Clock, FileText, X } from 'lucide-react';
 
 const RemarksSection = ({ applicationId, currentUser }) => {

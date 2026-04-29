@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../utils/axios';
 import { useNavigate } from 'react-router-dom';
 import { Users, FileText, CheckCircle, Clock, AlertCircle, BarChart3, TrendingUp, ShieldAlert, ShieldCheck } from 'lucide-react';
 
@@ -50,15 +50,7 @@ const AdminDashboard = () => {
     e.preventDefault();
     setAdminStatus({ loading: true, error: null, success: false });
     try {
-      // Get token from localStorage to send in header
-      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
-      await axios.post('/api/auth/admin', adminForm, config);
+      await axios.post('/api/auth/admin', adminForm);
       setAdminStatus({ loading: false, error: null, success: true });
       setAdminForm({ email: '', password: '', designation: '' });
       setTimeout(() => setAdminStatus(prev => ({ ...prev, success: false })), 3000);

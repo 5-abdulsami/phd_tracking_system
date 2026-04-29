@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../utils/axios';
 import { Search, Filter, Eye, CheckCircle, XCircle, Clock, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 

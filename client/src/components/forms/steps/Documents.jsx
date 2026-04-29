@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '../../../utils/axios';
 import { Upload, File, Check, X, AlertCircle, Loader } from 'lucide-react';
 
 const Documents = ({ data = {}, updateData }) => {

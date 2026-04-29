@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../utils/axios';
 import { Bell, CheckCircle, Info, Calendar, MailOpen } from 'lucide-react';
 
 const NotificationsPage = () => {
