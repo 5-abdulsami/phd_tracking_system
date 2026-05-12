@@ -90,38 +90,54 @@ const updateSection = async (req, res) => {
 
   const calculateProfileStrength = (app) => {
     let score = 0;
+    const CRITERIA_WEIGHT = 20; // 5 criteria = 100%
     
-    // 1. Age Limit (25%)
+    // 1. Age Limit (20%)
     if (app.applicantInfo?.dob) {
       const age = new Date().getFullYear() - new Date(app.applicantInfo.dob).getFullYear();
-      if (age <= 45) score += 25;
+      if (age <= 45) score += CRITERIA_WEIGHT;
     }
 
-    // 2. Publications (25%) - At least one in international journal
+    // 2. Publications (20%)
     if (app.researchExperience?.publications) {
       const hasInternational = app.researchExperience.publications.some(p => p.journalType === 'International');
-      if (hasInternational) score += 25;
+      if (hasInternational) score += CRITERIA_WEIGHT;
     }
 
-    // 3. CGPA (25%) - Good CGPA >= 3.5, Acceptable > 3.0
+    // 3. CGPA (20%)
     if (app.academicBackground && app.academicBackground.length > 0) {
-      // Get the highest degree CGPA or most recent
       const lastDegree = app.academicBackground[app.academicBackground.length - 1];
       const cgpa = parseFloat(lastDegree.cgpa);
-      if (cgpa >= 3.5) score += 25;
-      else if (cgpa > 3.0) score += 15;
+      if (cgpa >= 3.5) score += CRITERIA_WEIGHT;
+      else if (cgpa > 3.0) score += (CRITERIA_WEIGHT * 0.6); // 12 points
     }
 
-    // 4. Study Gap (25%) - Acceptable 5 to 7 years
+    // 4. Study Gap (20%)
     if (app.academicBackground && app.academicBackground.length > 0) {
       const lastDegree = app.academicBackground[app.academicBackground.length - 1];
       const gradYear = parseInt(lastDegree.year);
       const currentYear = new Date().getFullYear();
       const gap = currentYear - gradYear;
-      if (gap <= 7) score += 25;
+      if (gap <= 7) score += CRITERIA_WEIGHT;
     }
 
-    return score;
+    // 5. English Proficiency (20%)
+    if (app.englishProficiency) {
+      if (app.englishProficiency.testType === 'Not Yet Taken' || !app.englishProficiency.testType) {
+        score += (CRITERIA_WEIGHT * 0.9); // 18 points (90%)
+      } else {
+        const bands = parseFloat(app.englishProficiency.score);
+        if (bands >= 7) score += CRITERIA_WEIGHT; // 20 points
+        else if (bands >= 6) score += 15;
+        else if (bands >= 5) score += 12;
+        else if (bands >= 4) score += 10;
+        else score += 5;
+      }
+    } else {
+      score += (CRITERIA_WEIGHT * 0.9); // Default if section not started
+    }
+
+    return Math.round(score);
   };
 
   let filledCount = 0;

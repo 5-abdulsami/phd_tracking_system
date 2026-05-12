@@ -3,6 +3,8 @@ import axios from '../utils/axios';
 import { Search, Filter, Eye, CheckCircle, XCircle, Clock, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+import AdminLayout from '../components/layout/AdminLayout';
+
 const AdminApplications = () => {
   const [applications, setApplications] = useState([]);
   const [filteredApps, setFilteredApps] = useState([]);
@@ -61,7 +63,7 @@ const AdminApplications = () => {
       await axios.post('/api/notifications', {
         userId: applications.find(a => a._id === id).user._id,
         title: 'Application Status Updated',
-        message: `Your PhD application status has been updated to: ${newStatus.replace('_', ' ')}`,
+        message: `Your profile status has been updated to: ${newStatus.replace('_', ' ')}`,
         type: 'status_update'
       });
       fetchApplications(); // Refresh list
@@ -70,12 +72,13 @@ const AdminApplications = () => {
     }
   };
 
-  if (loading) return <div className="container mt-20">Loading Applications...</div>;
+  if (loading) return <div className="container mt-20">Loading Applicants...</div>;
 
   return (
-    <div className="admin-applications container mt-20">
-      <div className="flex justify-between items-center mb-20">
-        <h1 style={{ fontSize: '1.8rem' }}>Manage Applications</h1>
+    <AdminLayout>
+      <div className="admin-applications">
+        <div className="flex justify-between items-center mb-20">
+          <h1 style={{ fontSize: '1.8rem' }}>Manage Applicants</h1>
         <div className="flex gap-10">
           <div style={{ position: 'relative' }}>
             <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#999' }} />
@@ -101,12 +104,12 @@ const AdminApplications = () => {
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ textAlign: 'left', backgroundColor: '#f9fafb', borderBottom: '1px solid #eee' }}>
+              <th style={{ padding: '15px 20px' }}>Applicant Name</th>
               <th style={{ padding: '15px 20px' }}>Student Email</th>
               <th style={{ padding: '15px 20px' }}>Program</th>
               <th style={{ padding: '15px 20px' }}>Strength</th>
               <th style={{ padding: '15px 20px' }}>Progress</th>
               <th style={{ padding: '15px 20px' }}>Status</th>
-              <th style={{ padding: '15px 20px', textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -117,7 +120,10 @@ const AdminApplications = () => {
                 onClick={() => navigate(`/admin/applications/${app._id}`)}
                 style={{ borderBottom: '1px solid #f3f4f6', cursor: 'pointer' }}
               >
-                <td style={{ padding: '15px 20px', fontWeight: 600 }}>{app.user?.email}</td>
+                <td style={{ padding: '15px 20px', fontWeight: 600 }}>
+                  {app.applicantInfo?.firstName ? `${app.applicantInfo.firstName} ${app.applicantInfo.lastName}` : 'N/A'}
+                </td>
+                <td style={{ padding: '15px 20px' }}>{app.user?.email}</td>
                 <td style={{ padding: '15px 20px' }}>{app.programInfo?.programType || 'N/A'}</td>
                 <td style={{ padding: '15px 20px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -147,20 +153,13 @@ const AdminApplications = () => {
                            app.status === 'submitted' ? '#3b82f6' : '#666'
                   }}>{app.status.replace('_', ' ')}</span>
                 </td>
-                <td style={{ padding: '15px 20px', textAlign: 'right' }}>
-                   <div className="flex gap-10 justify-end">
-                      <button onClick={(e) => { e.stopPropagation(); navigate(`/admin/applications/${app._id}`); }} title="View Details" style={{ color: '#3b82f6', background: 'none' }}><Eye size={18} /></button>
-                      <button onClick={(e) => { e.stopPropagation(); updateAppStatus(app._id, 'under_review'); }} title="Set to Under Review" style={{ color: '#d97706', background: 'none' }}><Clock size={18} /></button>
-                      <button onClick={(e) => { e.stopPropagation(); updateAppStatus(app._id, 'accepted'); }} title="Accept" style={{ color: '#10b981', background: 'none' }}><CheckCircle size={18} /></button>
-                      <button onClick={(e) => { e.stopPropagation(); updateAppStatus(app._id, 'rejected'); }} title="Reject" style={{ color: '#ef4444', background: 'none' }}><XCircle size={18} /></button>
-                   </div>
-                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
     </div>
+    </AdminLayout>
   );
 };
 

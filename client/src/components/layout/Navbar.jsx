@@ -13,8 +13,8 @@ const Navbar = () => {
   useEffect(() => {
     if (user) {
       fetchUnreadCount();
-      // Polling for new notifications every 30 seconds
-      const interval = setInterval(fetchUnreadCount, 30000);
+      // Polling for new notifications every 5 seconds for a near real-time experience
+      const interval = setInterval(fetchUnreadCount, 5000);
       return () => clearInterval(interval);
     }
   }, [user]);
@@ -55,9 +55,7 @@ const Navbar = () => {
         <div className="flex items-center gap-20">
           {user ? (
             <>
-              {user.role === 'admin' ? (
-                <Link to="/admin" className="nav-link">Admin Dashboard</Link>
-              ) : (
+              {user.role !== 'admin' && (
                 <Link to="/dashboard" className="nav-link">Application</Link>
               )}
 

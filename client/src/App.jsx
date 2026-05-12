@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Navbar from './components/layout/Navbar';
+import AdminLayout from './components/layout/AdminLayout';
 import './styles/index.css';
 
 import LoginPage from './pages/LoginPage';
@@ -11,6 +12,7 @@ import ApplicationForm from './pages/ApplicationForm';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminApplications from './pages/AdminApplications';
 import AdminApplicationDetail from './pages/AdminApplicationDetail';
+import AdminUniversityApps from './pages/AdminUniversityApps';
 import NotificationsPage from './pages/NotificationsPage';
 import HomePage from './pages/HomePage';
 const ProtectedRoute = ({ children, role }) => {
@@ -38,6 +40,7 @@ const App = () => {
           <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
           <Route path="/admin/applications" element={<ProtectedRoute role="admin"><AdminApplications /></ProtectedRoute>} />
           <Route path="/admin/applications/:id" element={<ProtectedRoute role="admin"><AdminApplicationDetail /></ProtectedRoute>} />
+          <Route path="/admin/university-apps" element={<ProtectedRoute role="admin"><AdminUniversityApps /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </Router>

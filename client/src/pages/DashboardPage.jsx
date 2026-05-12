@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FileText, CheckCircle, Clock, AlertCircle, ArrowRight, MessageSquare } from 'lucide-react';
 import RemarksSection from '../components/RemarksSection';
+import UniversityApplicationsManager from '../components/UniversityApplicationsManager';
 
 const isSectionComplete = (key, section) => {
   if (!section) return false;
@@ -99,8 +100,8 @@ const DashboardPage = () => {
     <div className="dashboard-page container mt-20">
       <div className="welcome-header flex justify-between items-center mb-20" style={{ padding: '0 0 20px 0', borderBottom: '1px solid var(--border-color)' }}>
         <div>
-          <h1 style={{ fontSize: '1.8rem' }}>Welcome, {user.email.split('@')[0]}</h1>
-          <p style={{ color: 'var(--text-muted)' }}>Manage your PhD application and track your status.</p>
+          <h1 style={{ fontSize: '1.8rem' }}>Welcome, {application?.applicantInfo?.firstName ? `${application.applicantInfo.firstName} ${application.applicantInfo.lastName}` : user.email.split('@')[0]}</h1>
+          <p style={{ color: 'var(--text-muted)' }}>Manage your PhD profile and track your status.</p>
         </div>
         <div className="status-badge flex items-center gap-10" style={{ 
           backgroundColor: '#f3f4f6', padding: '8px 16px', borderRadius: '20px', 
@@ -110,10 +111,10 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      <div className="dashboard-grid flex gap-20 flex-col-mobile">
-        <div className="main-content" style={{ flex: 2 }}>
+      <div className="dashboard-grid">
+        <div className="main-content">
           <div className="card mb-20">
-            <h3 style={{ marginBottom: '15px' }}>Application Progress</h3>
+            <h3 style={{ marginBottom: '15px' }}>Profile Progress</h3>
             <div className="progress-container" style={{ position: 'relative', marginBottom: '30px' }}>
               <div style={{ backgroundColor: '#e5e7eb', height: '12px', borderRadius: '6px' }}>
                 <div style={{ 
@@ -127,7 +128,7 @@ const DashboardPage = () => {
             </div>
             
             <p style={{ marginBottom: '20px', color: 'var(--text-muted)' }}>
-              Complete all mandatory sections to submit your application.
+              Complete all mandatory sections to submit your PhD profile.
             </p>
 
             <button 
@@ -135,11 +136,11 @@ const DashboardPage = () => {
               className="btn btn-primary"
               style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 30px' }}
             >
-              {application?.completionPercentage === 0 ? 'Start Application' : 'Continue Application'} <ArrowRight size={18} />
+              {application?.completionPercentage === 0 ? 'Start Profile' : 'View Profile'} <ArrowRight size={18} />
             </button>
           </div>
 
-          <div className="dashboard-sections grid gap-20" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
+          <div className="dashboard-sections mb-20">
             <div className="card" style={{ display: 'flex', gap: '15px', borderLeft: `5px solid ${getStrengthColor(application?.profileStrength || 0)}` }}>
               <div style={{ backgroundColor: '#f0fdf4', padding: '10px', borderRadius: '8px', color: getStrengthColor(application?.profileStrength || 0) }}>
                 <CheckCircle size={24} />
@@ -156,60 +157,27 @@ const DashboardPage = () => {
                   </div>
                   <span style={{ fontWeight: 700, minWidth: '40px' }}>{application?.profileStrength || 0}%</span>
                 </div>
-                <p style={{ fontSize: '0.75rem', marginTop: '5px', color: 'var(--text-muted)' }}>Based on CGPA, Publications, and Age.</p>
-              </div>
-            </div>
-           
-            <div className="card" style={{ display: 'flex', gap: '15px' }}>
-              <div style={{ backgroundColor: '#e0f2fe', padding: '10px', borderRadius: '8px', color: '#0ea5e9' }}>
-                <CheckCircle size={24} />
-              </div>
-              <div>
-                <h4 style={{ fontSize: '1rem', marginBottom: '5px' }}>Status Tracker</h4>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Real-time updates as your application moves to review.</p>
+                <p style={{ fontSize: '0.75rem', marginTop: '5px', color: 'var(--text-muted)' }}>Based on CGPA, Publications, Age, and English Proficiency.</p>
               </div>
             </div>
           </div>
 
-          {/* Remarks Section for Student */}
-          {application?._id && (
-            <RemarksSection applicationId={application._id} currentUser={user} />
+          {/* University Applications for Student */}
+          {user?._id && (
+            <UniversityApplicationsManager 
+              studentId={user._id} 
+              currentUser={user} 
+              isAdmin={false} 
+            />
           )}
-        </div>
 
-        <div className="sidebar" style={{ flex: 1 }}>
-          <div className="card">
-            <h3 style={{ marginBottom: '20px', fontSize: '1.2rem' }}>Section Status</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px' }}>
-              {[
-                { title: 'Applicant Info', key: 'applicantInfo' },
-                { title: 'Contact Details', key: 'contactDetails' },
-                { title: 'Guardian Info', key: 'guardianInfo' },
-                { title: 'Academic Background', key: 'academicBackground' },
-                { title: 'Program Info', key: 'programInfo' },
-                { title: 'Research Experience', key: 'researchExperience' },
-                { title: 'English Proficiency', key: 'englishProficiency' },
-                { title: 'Funding Information', key: 'fundingInfo' },
-                { title: 'Referee Details', key: 'referees' },
-                { title: 'Document Uploads', key: 'documents' },
-                { title: 'Final Declaration', key: 'declaration' }
-              ].map((s, idx) => {
-                const isDone = isSectionComplete(s.key, application?.[s.key]);
-                return (
-                  <div key={idx} className="flex justify-between items-center" style={{ 
-                    padding: '10px 15px', borderRadius: '6px', backgroundColor: isDone ? '#f0fdf4' : '#f9fafb',
-                    border: '1px solid', borderColor: isDone ? '#bcf0da' : '#eee'
-                  }}>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 500, color: isDone ? '#166534' : '#666' }}>{s.title}</span>
-                    {isDone ? (
-                      <CheckCircle size={16} color="#22c55e" />
-                    ) : (
-                      <div style={{ width: '16px', height: '16px', borderRadius: '50%', border: '2px solid #e5e7eb' }}></div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+          {/* Remarks Section for Student */}
+          <div className="mt-40">
+            <RemarksSection 
+              applicationId={application?._id} 
+              currentUser={user} 
+              title="Profile Feedback & General Remarks"
+            />
           </div>
         </div>
       </div>

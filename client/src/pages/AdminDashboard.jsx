@@ -3,6 +3,8 @@ import axios from '../utils/axios';
 import { useNavigate } from 'react-router-dom';
 import { Users, FileText, CheckCircle, Clock, AlertCircle, BarChart3, TrendingUp, ShieldAlert, ShieldCheck } from 'lucide-react';
 
+import AdminLayout from '../components/layout/AdminLayout';
+
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
     total: 0,
@@ -40,7 +42,7 @@ const AdminDashboard = () => {
   if (loading) return <div className="container mt-20">Loading Admin Dashboard...</div>;
 
   const statCards = [
-    { label: 'Total Applications', count: stats.total, icon: <FileText size={24} />, color: '#3b82f6', bg: '#eff6ff' },
+    { label: 'Total Applicants', count: stats.total, icon: <FileText size={24} />, color: '#3b82f6', bg: '#eff6ff' },
     { label: 'Pending Review', count: stats.pending, icon: <Clock size={24} />, color: '#d97706', bg: '#fffbeb' },
     { label: 'Accepted', count: stats.accepted, icon: <CheckCircle size={24} />, color: '#10b981', bg: '#ecfdf5' },
     { label: 'Rejected', count: stats.rejected, icon: <AlertCircle size={24} />, color: '#ef4444', bg: '#fef2f2' },
@@ -64,11 +66,12 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="admin-dashboard container mt-20">
-      <div className="flex justify-between items-center mb-20">
-        <h1 style={{ fontSize: '1.8rem' }}>Admin Dashboard</h1>
-        <button className="btn btn-primary" onClick={() => navigate('/admin/applications')}>View All Applications</button>
-      </div>
+    <AdminLayout>
+      <div className="admin-dashboard">
+        <div className="flex justify-between items-center mb-20">
+          <h1 style={{ fontSize: '1.8rem' }}>Admin Dashboard</h1>
+          <button className="btn btn-primary" onClick={() => navigate('/admin/applications')}>View All Applicants</button>
+        </div>
 
       <div className="grid gap-20" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', marginBottom: '30px' }}>
         {statCards.map((stat, i) => (
@@ -100,7 +103,9 @@ const AdminDashboard = () => {
               <tbody>
                 {stats.recent.map((app, i) => (
                   <tr key={i} style={{ borderBottom: '1px solid #f3f4f6' }}>
-                    <td style={{ padding: '12px 10px' }}>{app.user?.email || 'N/A'}</td>
+                    <td style={{ padding: '12px 10px', fontWeight: 600 }}>
+                      {app.applicantInfo?.firstName ? `${app.applicantInfo.firstName} ${app.applicantInfo.lastName}` : app.user?.email || 'N/A'}
+                    </td>
                     <td style={{ padding: '12px 10px' }}>{app.programInfo?.programType || 'N/A'}</td>
                     <td style={{ padding: '12px 10px' }}>
                       <span style={{ 
@@ -189,6 +194,7 @@ const AdminDashboard = () => {
         </div>
       </div>
     </div>
+    </AdminLayout>
   );
 };
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from '../utils/axios';
 import { Send, Paperclip, Download, User, MessageSquare, Clock, FileText, X } from 'lucide-react';
 
-const RemarksSection = ({ applicationId, currentUser }) => {
+const RemarksSection = ({ applicationId, universityApplicationId, currentUser, title = "Remarks & Comments" }) => {
   const [remarks, setRemarks] = useState([]);
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
@@ -10,14 +10,21 @@ const RemarksSection = ({ applicationId, currentUser }) => {
   const [attachment, setAttachment] = useState(null);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
+  const remarksEndRef = useRef(null);
+
+  const id = universityApplicationId || applicationId;
+  const type = universityApplicationId ? 'university' : 'master';
 
   useEffect(() => {
     fetchRemarks();
-  }, [applicationId]);
+    // Poll for new remarks every 5 seconds
+    const interval = setInterval(fetchRemarks, 5000);
+    return () => clearInterval(interval);
+  }, [id]);
 
   const fetchRemarks = async () => {
     try {
-      const { data } = await axios.get(`/api/remarks/${applicationId}`);
+      const { data } = await axios.get(`/api/remarks/${id}?type=${type}`);
       setRemarks(data);
     } catch (err) {
       console.error('Error fetching remarks');
@@ -62,7 +69,8 @@ const RemarksSection = ({ applicationId, currentUser }) => {
       }
 
       const { data: newRemark } = await axios.post('/api/remarks', {
-        applicationId,
+        applicationId: universityApplicationId ? undefined : applicationId,
+        universityApplicationId: universityApplicationId || undefined,
         content,
         attachmentUrl,
         attachmentName
@@ -87,7 +95,7 @@ const RemarksSection = ({ applicationId, currentUser }) => {
       <div className="card shadow-sm" style={{ borderTop: '4px solid #3b82f6' }}>
         <div className="flex items-center gap-10 mb-20 pb-10" style={{ borderBottom: '1px solid #f3f4f6' }}>
           <MessageSquare size={20} color="#3b82f6" />
-          <h3 style={{ margin: 0 }}>Application Remarks & Comments</h3>
+          <h3 style={{ margin: 0 }}>{title}</h3>
         </div>
 
         <div className="remarks-list mb-20" style={{ 
@@ -148,6 +156,7 @@ const RemarksSection = ({ applicationId, currentUser }) => {
               </div>
             ))
           )}
+          <div ref={remarksEndRef} />
         </div>
 
         <form onSubmit={handleSubmit} className="remark-form">
