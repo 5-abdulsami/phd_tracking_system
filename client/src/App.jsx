@@ -13,6 +13,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminApplications from './pages/AdminApplications';
 import AdminApplicationDetail from './pages/AdminApplicationDetail';
 import AdminUniversityApps from './pages/AdminUniversityApps';
+import AdminScholarships from './pages/AdminScholarships';
 import NotificationsPage from './pages/NotificationsPage';
 import HomePage from './pages/HomePage';
 const ProtectedRoute = ({ children, role }) => {
@@ -41,6 +42,7 @@ const App = () => {
           <Route path="/admin/applications" element={<ProtectedRoute role="admin"><AdminApplications /></ProtectedRoute>} />
           <Route path="/admin/applications/:id" element={<ProtectedRoute role="admin"><AdminApplicationDetail /></ProtectedRoute>} />
           <Route path="/admin/university-apps" element={<ProtectedRoute role="admin"><AdminUniversityApps /></ProtectedRoute>} />
+          <Route path="/admin/scholarships" element={<ProtectedRoute role="admin"><AdminScholarships /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </Router>

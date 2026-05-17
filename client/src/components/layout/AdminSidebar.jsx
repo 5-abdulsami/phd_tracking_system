@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   Users, Globe, LayoutDashboard, 
-  ChevronRight, LogOut 
+  ChevronRight, LogOut, Award 
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -13,6 +13,7 @@ const AdminSidebar = () => {
     { name: 'Dashboard', path: '/admin', icon: <LayoutDashboard size={22} /> },
     { name: 'Applicants', path: '/admin/applications', icon: <Users size={22} /> },
     { name: 'Applications', path: '/admin/university-apps', icon: <Globe size={22} /> },
+    { name: 'Scholarships', path: '/admin/scholarships', icon: <Award size={22} /> },
   ];
 
   return (

@@ -16,7 +16,8 @@ const addRemark = asyncHandler(async (req, res) => {
   let targetEmail;
   let targetIdForLink;
 
-  if (universityApplicationId) {
+  // 1. Identify Target and Context
+  if (universityApplicationId && universityApplicationId !== 'null' && universityApplicationId !== 'undefined') {
     const UniversityApplication = require('../models/UniversityApplication');
     const universityApp = await UniversityApplication.findById(universityApplicationId).populate('student');
     if (!universityApp) {
@@ -26,7 +27,7 @@ const addRemark = asyncHandler(async (req, res) => {
     targetUserId = universityApp.student._id;
     targetEmail = universityApp.student.email;
     targetIdForLink = universityApp._id;
-  } else {
+  } else if (applicationId && applicationId !== 'null' && applicationId !== 'undefined') {
     const application = await Application.findById(applicationId).populate('user');
     if (!application) {
       res.status(404);
@@ -35,19 +36,29 @@ const addRemark = asyncHandler(async (req, res) => {
     targetUserId = application.user?._id;
     targetEmail = application.user?.email;
     targetIdForLink = application._id;
+  } else {
+    res.status(400);
+    throw new Error('No valid application context provided');
   }
 
-  const remark = await Remark.create({
-    application: applicationId || undefined,
-    universityApplication: universityApplicationId || undefined,
+  // 2. Create Remark with clean IDs
+  const remarkData = {
     sender: req.user._id,
     senderDesignation: req.user.designation || (req.user.role === 'admin' ? 'Admin' : 'Student'),
     content,
     attachmentUrl,
     attachmentName,
-  });
+  };
 
-  // Notify student if remark is from admin
+  if (universityApplicationId && universityApplicationId !== 'null' && universityApplicationId !== 'undefined') {
+    remarkData.universityApplication = universityApplicationId;
+  } else {
+    remarkData.application = applicationId;
+  }
+
+  const remark = await Remark.create(remarkData);
+
+  // 3. Notify
   if (req.user.role === 'admin' && targetUserId) {
     if (targetEmail) {
       sendRemarkNotification(targetEmail, content, targetIdForLink);
@@ -59,7 +70,6 @@ const addRemark = asyncHandler(async (req, res) => {
       type: 'general'
     });
   } else if (req.user.role === 'student') {
-    // Notify admins if student replies
     const admins = await User.find({ role: 'admin' });
     for (const admin of admins) {
       await Notification.create({
@@ -79,12 +89,18 @@ const addRemark = asyncHandler(async (req, res) => {
 // @access  Private
 const getRemarks = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { type } = req.query; // type can be 'master' or 'university'
+  const { type } = req.query;
+
+  if (!id || id === 'undefined' || id === 'null') {
+    return res.json([]);
+  }
 
   let query = {};
   if (type === 'university') {
     query = { universityApplication: id };
   } else {
+    // Strictly find profile remarks by Application ID
+    // Since university remarks don't have this application ID set, they won't overlap.
     query = { application: id };
   }
 

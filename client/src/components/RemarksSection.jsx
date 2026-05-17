@@ -16,6 +16,8 @@ const RemarksSection = ({ applicationId, universityApplicationId, currentUser, t
   const type = universityApplicationId ? 'university' : 'master';
 
   useEffect(() => {
+    if (!id) return;
+    
     fetchRemarks();
     // Poll for new remarks every 5 seconds
     const interval = setInterval(fetchRemarks, 5000);
