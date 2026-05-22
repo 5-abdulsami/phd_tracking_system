@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../utils/axios';
-import { 
-  Search, Globe, Plus, 
-  ChevronDown, ChevronUp, Edit2, 
-  Trash2, MessageCircle, User 
+import {
+  Search, Globe, Plus,
+  ChevronDown, ChevronUp, Edit2,
+  Trash2, MessageCircle, User
 } from 'lucide-react';
 import AdminLayout from '../components/layout/AdminLayout';
 import RemarksSection from '../components/RemarksSection';
@@ -18,7 +18,7 @@ const AdminUniversityApps = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [expandedId, setExpandedId] = useState(null);
   const { user: currentUser } = useAuth();
-  
+
   const [formData, setFormData] = useState({
     universityName: '',
     programName: '',
@@ -99,7 +99,7 @@ const AdminUniversityApps = () => {
     }
   };
 
-  const filteredStudents = students.filter(s => 
+  const filteredStudents = students.filter(s =>
     s.user?.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     s.applicantInfo?.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     s.applicantInfo?.lastName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -114,9 +114,9 @@ const AdminUniversityApps = () => {
             <h3 style={{ fontSize: '1.1rem', marginBottom: '15px' }}>Select Student</h3>
             <div style={{ position: 'relative' }}>
               <Search size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#999' }} />
-              <input 
-                type="text" 
-                placeholder="Search..." 
+              <input
+                type="text"
+                placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{ paddingLeft: '35px', fontSize: '0.85rem' }}
@@ -125,11 +125,11 @@ const AdminUniversityApps = () => {
           </div>
           <div className="students-list" style={{ maxHeight: '600px', overflowY: 'auto' }}>
             {filteredStudents.map(student => (
-              <div 
+              <div
                 key={student._id}
                 onClick={() => handleStudentSelect(student)}
-                style={{ 
-                  padding: '12px 20px', 
+                style={{
+                  padding: '12px 20px',
                   cursor: 'pointer',
                   borderBottom: '1px solid #f3f4f6',
                   backgroundColor: selectedStudent?._id === student._id ? '#eff6ff' : 'transparent',
@@ -154,8 +154,8 @@ const AdminUniversityApps = () => {
                   <p style={{ margin: 0, color: '#666', fontSize: '0.85rem' }}>{selectedStudent.user?.email}</p>
                 </div>
                 {!isAdding && (
-                  <button 
-                    onClick={() => setIsAdding(true)} 
+                  <button
+                    onClick={() => setIsAdding(true)}
                     className="btn btn-primary flex items-center gap-5"
                   >
                     <Plus size={18} /> New Application
@@ -210,20 +210,20 @@ const AdminUniversityApps = () => {
                   </div>
                 ) : (
                   universityApps.map(app => (
-                    <div key={app._id} className="card p-0 overflow-hidden shadow-sm">
-                      <div 
+                    <div key={app._id} className="overflow-hidden bg-white rounded-8 mb-10 transition-all" style={{ border: '1px solid #e5e7eb', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                      <div
                         className="p-15 flex justify-between items-center cursor-pointer hover-bg-light"
                         onClick={() => setExpandedId(expandedId === app._id ? null : app._id)}
                       >
                         <div className="flex items-center gap-12">
-                          <Globe size={18} color="var(--primary-red)" />
+                          <Globe size={18} style={{ marginRight: '10px' }} color="var(--primary-red)" />
                           <div>
                             <h4 style={{ margin: 0, fontSize: '1rem' }}>{app.universityName}</h4>
                             <p style={{ margin: 0, fontSize: '0.75rem', color: '#666' }}>{app.programName}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-12">
-                          <span style={{ 
+                          <span style={{
                             padding: '3px 10px', borderRadius: '15px', fontSize: '0.7rem', fontWeight: 700,
                             backgroundColor: app.status === 'Accepted' ? '#dcfce7' : '#eff6ff',
                             color: app.status === 'Accepted' ? '#166534' : '#1e40af'
@@ -233,15 +233,15 @@ const AdminUniversityApps = () => {
                           {expandedId === app._id ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                         </div>
                       </div>
-                      
+
                       {expandedId === app._id && (
                         <div className="p-20 pt-0 border-top">
                           <div className="mt-15 p-15 bg-light rounded-8 mb-20">
                             <div className="text-sm"><strong>Date:</strong> {app.appliedDate ? new Date(app.appliedDate).toLocaleDateString() : 'N/A'}</div>
                             <div className="text-sm mt-5"><strong>Notes:</strong> {app.notes || 'None'}</div>
                           </div>
-                          <RemarksSection 
-                            universityApplicationId={app._id} 
+                          <RemarksSection
+                            universityApplicationId={app._id}
                             currentUser={currentUser}
                             title={`Chat about ${app.universityName}`}
                           />

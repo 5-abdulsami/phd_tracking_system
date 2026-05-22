@@ -44,13 +44,23 @@ const Navbar = () => {
       zIndex: 1000
     }}>
       <div className="container flex justify-between items-center">
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <img src={logo} alt="Spectrum Consultants" style={{ height: '50px' }} />
-          <div>
-            <span style={{ fontWeight: 700, fontSize: '1.2rem', color: 'var(--secondary-dark)' }}>PHD</span>
-            <span style={{ fontWeight: 400, fontSize: '1.2rem', color: 'var(--text-muted)' }}>TRACKING</span>
+        {user && user.role === 'admin' ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'default' }}>
+            <img src={logo} alt="Spectrum Consultants" style={{ height: '50px' }} />
+            <div>
+              <span style={{ fontWeight: 700, fontSize: '1.2rem', color: 'var(--secondary-dark)' }}>PHD</span>
+              <span style={{ fontWeight: 400, fontSize: '1.2rem', color: 'var(--text-muted)' }}>TRACKING</span>
+            </div>
           </div>
-        </Link>
+        ) : (
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <img src={logo} alt="Spectrum Consultants" style={{ height: '50px' }} />
+            <div>
+              <span style={{ fontWeight: 700, fontSize: '1.2rem', color: 'var(--secondary-dark)' }}>PHD</span>
+              <span style={{ fontWeight: 400, fontSize: '1.2rem', color: 'var(--text-muted)' }}>TRACKING</span>
+            </div>
+          </Link>
+        )}
 
         <div className="flex items-center gap-20">
           {user ? (
