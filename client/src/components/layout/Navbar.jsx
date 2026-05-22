@@ -44,7 +44,7 @@ const Navbar = () => {
       zIndex: 1000
     }}>
       <div className="container flex justify-between items-center">
-        {user && user.role === 'admin' ? (
+        {user ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'default' }}>
             <img src={logo} alt="Spectrum Consultants" style={{ height: '50px' }} />
             <div>
@@ -65,9 +65,6 @@ const Navbar = () => {
         <div className="flex items-center gap-20">
           {user ? (
             <>
-              {user.role !== 'admin' && (
-                <Link to="/dashboard" className="nav-link">Application</Link>
-              )}
 
               <Link to="/notifications" style={{ position: 'relative' }}>
                 <Bell size={20} color="var(--secondary-dark)" />

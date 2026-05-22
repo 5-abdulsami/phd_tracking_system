@@ -172,7 +172,7 @@ const DashboardPage = () => {
           )}
 
           {/* Remarks Section for Student */}
-          <div className="mt-40">
+          <div className="mt-40" style={{ marginBottom: '40px' }}>
             <RemarksSection
               applicationId={application?._id}
               currentUser={user}
