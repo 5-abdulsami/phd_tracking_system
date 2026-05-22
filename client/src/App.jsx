@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Navbar from './components/layout/Navbar';
 import AdminLayout from './components/layout/AdminLayout';
@@ -27,25 +28,29 @@ const ProtectedRoute = ({ children, role }) => {
 };
 
 const App = () => {
+  const googleClientId = "94809376771-g4eq78o2gjeea138hmuhmkgml6b78qs8.apps.googleusercontent.com";
+
   return (
-    <Router>
-      <AuthProvider>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-          <Route path="/application/edit" element={<ProtectedRoute><ApplicationForm /></ProtectedRoute>} />
-          <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
-          <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
-          <Route path="/admin/applications" element={<ProtectedRoute role="admin"><AdminApplications /></ProtectedRoute>} />
-          <Route path="/admin/applications/:id" element={<ProtectedRoute role="admin"><AdminApplicationDetail /></ProtectedRoute>} />
-          <Route path="/admin/university-apps" element={<ProtectedRoute role="admin"><AdminUniversityApps /></ProtectedRoute>} />
-          <Route path="/admin/scholarships" element={<ProtectedRoute role="admin"><AdminScholarships /></ProtectedRoute>} />
-        </Routes>
-      </AuthProvider>
-    </Router>
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <Router>
+        <AuthProvider>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+            <Route path="/application/edit" element={<ProtectedRoute><ApplicationForm /></ProtectedRoute>} />
+            <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
+            <Route path="/admin/applications" element={<ProtectedRoute role="admin"><AdminApplications /></ProtectedRoute>} />
+            <Route path="/admin/applications/:id" element={<ProtectedRoute role="admin"><AdminApplicationDetail /></ProtectedRoute>} />
+            <Route path="/admin/university-apps" element={<ProtectedRoute role="admin"><AdminUniversityApps /></ProtectedRoute>} />
+            <Route path="/admin/scholarships" element={<ProtectedRoute role="admin"><AdminScholarships /></ProtectedRoute>} />
+          </Routes>
+        </AuthProvider>
+      </Router>
+    </GoogleOAuthProvider>
   );
 };
 

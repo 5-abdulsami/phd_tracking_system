@@ -1,6 +1,18 @@
 const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+const verifyGoogleToken = async (token) => {
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: process.env.GOOGLE_CLIENT_ID,
+  });
+  return ticket.getPayload();
+};
+
 
 /**
  * Generate JWT Token
@@ -127,9 +139,70 @@ const getMe = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Google authentication (Login or Register)
+// @route   POST /api/auth/google
+// @access  Public
+const googleAuth = asyncHandler(async (req, res) => {
+  const { credential } = req.body;
+
+  if (!credential) {
+    res.status(400);
+    throw new Error('Google credential is required');
+  }
+
+  let payload;
+  try {
+    payload = await verifyGoogleToken(credential);
+  } catch (error) {
+    res.status(400);
+    throw new Error('Invalid Google credential: ' + error.message);
+  }
+
+  const { sub: googleId, email, email_verified } = payload;
+
+  if (!email_verified) {
+    res.status(400);
+    throw new Error('Google email is not verified');
+  }
+
+  // Check if user already exists by googleId or email
+  let user = await User.findOne({
+    $or: [{ googleId }, { email }],
+  });
+
+  if (user) {
+    // If user exists but doesn't have googleId yet, update it
+    if (!user.googleId) {
+      user.googleId = googleId;
+      await user.save();
+    }
+  } else {
+    // Register new user with student role
+    user = await User.create({
+      email,
+      googleId,
+      role: 'student',
+    });
+  }
+
+  if (user) {
+    res.status(200).json({
+      _id: user._id,
+      email: user.email,
+      role: user.role,
+      designation: user.designation,
+      token: generateToken(user._id),
+    });
+  } else {
+    res.status(400);
+    throw new Error('Google authentication failed');
+  }
+});
+
 module.exports = {
   registerUser,
   authUser,
   getMe,
   createAdminUser,
+  googleAuth,
 };

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Mail, Lock, LogIn } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -9,7 +10,7 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -29,6 +30,27 @@ const LoginPage = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError('');
+    setIsLoading(true);
+    try {
+      const user = await loginWithGoogle(credentialResponse.credential);
+      if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Google Authentication failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError('Google Sign-In was unsuccessful. Try again.');
   };
 
   return (
@@ -99,6 +121,24 @@ const LoginPage = () => {
             )}
           </button>
         </form>
+
+        <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0', color: 'var(--text-muted)' }}>
+          <div style={{ flex: 1, height: '1px', backgroundColor: '#e2e8f0' }}></div>
+          <span style={{ padding: '0 10px', fontSize: '0.85rem' }}>or</span>
+          <div style={{ flex: 1, height: '1px', backgroundColor: '#e2e8f0' }}></div>
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            useOneTap
+            theme="outline"
+            shape="rectangular"
+            size="large"
+            width="320"
+          />
+        </div>
 
         <div style={{ marginTop: '25px', textAlign: 'center', fontSize: '0.9rem' }}>
           <span style={{ color: 'var(--text-muted)' }}>Don't have an account? </span>
