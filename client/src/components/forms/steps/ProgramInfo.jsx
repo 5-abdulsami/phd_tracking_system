@@ -21,23 +21,23 @@ const ProgramInfo = ({ data, updateData }) => {
         </div>
         <div className="form-group">
           <label className="block mb-10 font-600">Proposed Field of Research <span style={{ color: 'red' }}>*</span></label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="proposedField"
-            value={data?.proposedField || ''} 
+            value={data?.proposedField || ''}
             onChange={handleChange}
-            placeholder="e.g. Artificial Intelligence" 
+            placeholder="e.g. Artificial Intelligence"
             style={{ borderColor: isInvalid(data?.proposedField) ? 'var(--primary-red)' : '' }}
           />
         </div>
         <div className="form-group">
           <label className="block mb-10 font-600">Preferred Supervisor (Optional)</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="supervisorName"
-            value={data?.supervisorName || ''} 
+            value={data?.supervisorName || ''}
             onChange={handleChange}
-            placeholder="Name of supervisor" 
+            placeholder="Name of supervisor"
           />
         </div>
         <div className="form-group">

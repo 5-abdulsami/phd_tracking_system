@@ -71,7 +71,7 @@ const DashboardPage = () => {
 
   if (loading) return (
     <div className="container mt-20" style={{ textAlign: 'center', padding: '50px' }}>
-       <div className="spinner">Loading...</div>
+      <div className="spinner">Loading...</div>
     </div>
   );
 
@@ -103,8 +103,8 @@ const DashboardPage = () => {
           <h1 style={{ fontSize: '1.8rem' }}>Welcome, {application?.applicantInfo?.firstName ? `${application.applicantInfo.firstName} ${application.applicantInfo.lastName}` : user.email.split('@')[0]}</h1>
           <p style={{ color: 'var(--text-muted)' }}>Manage your PhD profile and track your status.</p>
         </div>
-        <div className="status-badge flex items-center gap-10" style={{ 
-          backgroundColor: '#f3f4f6', padding: '8px 16px', borderRadius: '20px', 
+        <div className="status-badge flex items-center gap-10" style={{
+          backgroundColor: '#f3f4f6', padding: '8px 16px', borderRadius: '20px',
           border: `1px solid ${status.color}`, color: status.color, fontWeight: 600
         }}>
           {status.icon} {status.label}
@@ -117,8 +117,8 @@ const DashboardPage = () => {
             <h3 style={{ marginBottom: '15px' }}>Profile Progress</h3>
             <div className="progress-container" style={{ position: 'relative', marginBottom: '30px' }}>
               <div style={{ backgroundColor: '#e5e7eb', height: '12px', borderRadius: '6px' }}>
-                <div style={{ 
-                   backgroundColor: 'var(--primary-red)', height: '100%', borderRadius: '6px',
+                <div style={{
+                  backgroundColor: 'var(--primary-red)', height: '100%', borderRadius: '6px',
                   width: `${application?.completionPercentage || 0}%`, transition: 'width 0.5s ease-in-out'
                 }}></div>
               </div>
@@ -126,12 +126,12 @@ const DashboardPage = () => {
                 {application?.completionPercentage || 0}% Completed
               </span>
             </div>
-            
+
             <p style={{ marginBottom: '20px', color: 'var(--text-muted)' }}>
               Complete all mandatory sections to submit your PhD profile.
             </p>
 
-            <button 
+            <button
               onClick={() => navigate('/application/edit')}
               className="btn btn-primary"
               style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 30px' }}
@@ -149,10 +149,10 @@ const DashboardPage = () => {
                 <h4 style={{ fontSize: '1rem', marginBottom: '5px' }}>Profile Strength</h4>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <div style={{ flex: 1, backgroundColor: '#e5e7eb', height: '8px', borderRadius: '4px' }}>
-                    <div style={{ 
-                      backgroundColor: getStrengthColor(application?.profileStrength || 0), 
-                      width: `${application?.profileStrength || 0}%`, 
-                      height: '100%', borderRadius: '4px' 
+                    <div style={{
+                      backgroundColor: getStrengthColor(application?.profileStrength || 0),
+                      width: `${application?.profileStrength || 0}%`,
+                      height: '100%', borderRadius: '4px'
                     }}></div>
                   </div>
                   <span style={{ fontWeight: 700, minWidth: '40px' }}>{application?.profileStrength || 0}%</span>
@@ -164,18 +164,18 @@ const DashboardPage = () => {
 
           {/* University Applications for Student */}
           {user?._id && (
-            <UniversityApplicationsManager 
-              studentId={user._id} 
-              currentUser={user} 
-              isAdmin={false} 
+            <UniversityApplicationsManager
+              studentId={user._id}
+              currentUser={user}
+              isAdmin={false}
             />
           )}
 
           {/* Remarks Section for Student */}
           <div className="mt-40">
-            <RemarksSection 
-              applicationId={application?._id} 
-              currentUser={user} 
+            <RemarksSection
+              applicationId={application?._id}
+              currentUser={user}
               title="Profile Feedback & General Remarks"
             />
           </div>

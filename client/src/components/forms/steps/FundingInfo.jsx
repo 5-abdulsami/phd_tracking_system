@@ -21,11 +21,11 @@ const FundingInfo = ({ data, updateData }) => {
       </div>
       <div className="form-group">
         <label className="block mb-10 font-600">Funding Details / Scholarship Name (if any) <span style={{ color: 'red' }}>*</span></label>
-        <textarea 
+        <textarea
           name="details"
-          value={data?.details || ''} 
+          value={data?.details || ''}
           onChange={handleChange}
-          placeholder="Enter additional details about your funding arrangement" 
+          placeholder="Enter additional details about your funding arrangement"
           rows="4"
           style={{ borderColor: !data?.details ? 'var(--primary-red)' : '' }}
         />

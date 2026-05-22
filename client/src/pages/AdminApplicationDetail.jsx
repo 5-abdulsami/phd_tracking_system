@@ -173,9 +173,9 @@ const AdminApplicationDetail = () => {
             ))}
 
             {/* Profile Feedback Section */}
-            <RemarksSection 
-              applicationId={id} 
-              currentUser={currentUser} 
+            <RemarksSection
+              applicationId={id}
+              currentUser={currentUser}
               title="Profile Feedback & General Remarks"
             />
           </div>

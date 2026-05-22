@@ -8,7 +8,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -16,7 +16,7 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-    
+
     try {
       const user = await login(email, password);
       if (user.role === 'admin') {
@@ -32,8 +32,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="auth-page" style={{ 
-      display: 'flex', justifyContent: 'center', alignItems: 'center', 
+    <div className="auth-page" style={{
+      display: 'flex', justifyContent: 'center', alignItems: 'center',
       minHeight: 'calc(100vh - 80px)', backgroundColor: 'var(--bg-light)'
     }}>
       <div className="card" style={{ width: '100%', maxWidth: '400px', padding: '40px' }}>
@@ -43,9 +43,9 @@ const LoginPage = () => {
         </div>
 
         {error && (
-          <div style={{ 
-            backgroundColor: '#fee2e2', color: '#dc2626', padding: '12px', 
-            borderRadius: 'var(--radius-sm)', marginBottom: '20px', fontSize: '0.9rem' 
+          <div style={{
+            backgroundColor: '#fee2e2', color: '#dc2626', padding: '12px',
+            borderRadius: 'var(--radius-sm)', marginBottom: '20px', fontSize: '0.9rem'
           }}>
             {error}
           </div>
@@ -55,16 +55,16 @@ const LoginPage = () => {
           <div className="form-group" style={{ marginBottom: '20px' }}>
             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>Email Address</label>
             <div style={{ position: 'relative' }}>
-              <Mail size={18} style={{ 
-                position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', 
-                color: 'var(--text-muted)' 
+              <Mail size={18} style={{
+                position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)',
+                color: 'var(--text-muted)'
               }} />
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
-                value={email} 
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required 
+                required
                 style={{ paddingLeft: '40px' }}
               />
             </div>
@@ -73,24 +73,24 @@ const LoginPage = () => {
           <div className="form-group" style={{ marginBottom: '30px' }}>
             <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, fontSize: '0.9rem' }}>Password</label>
             <div style={{ position: 'relative' }}>
-              <Lock size={18} style={{ 
-                position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', 
-                color: 'var(--text-muted)' 
+              <Lock size={18} style={{
+                position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)',
+                color: 'var(--text-muted)'
               }} />
-              <input 
-                type="password" 
-                placeholder="Enter your password" 
-                value={password} 
+              <input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required 
+                required
                 style={{ paddingLeft: '40px' }}
               />
             </div>
           </div>
 
-          <button 
-            type="submit" 
-            className="btn btn-primary" 
+          <button
+            type="submit"
+            className="btn btn-primary"
             disabled={isLoading}
             style={{ width: '100%', padding: '12px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}
           >

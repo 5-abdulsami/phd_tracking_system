@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../utils/axios';
-import { 
-  Plus, Trash2, Edit2, Check, X, 
-  ChevronDown, ChevronUp, Globe, 
+import {
+  Plus, Trash2, Edit2, Check, X,
+  ChevronDown, ChevronUp, Globe,
   Calendar, MessageCircle
 } from 'lucide-react';
 import RemarksSection from './RemarksSection';
@@ -91,12 +91,12 @@ const UniversityApplicationsManager = ({ studentId, currentUser, isAdmin }) => {
     <div className="university-applications-manager mt-30">
       <div className="flex justify-between items-center mb-20">
         <h2 className="flex items-center gap-10" style={{ margin: 0 }}>
-          <Globe size={24} color="var(--primary-red)" /> 
+          <Globe size={24} color="var(--primary-red)" />
           University & Scholarship Applications
         </h2>
         {isAdmin && !isAdding && (
-          <button 
-            onClick={() => setIsAdding(true)} 
+          <button
+            onClick={() => setIsAdding(true)}
             className="btn btn-primary flex items-center gap-5"
           >
             <Plus size={18} /> Add New Application
@@ -114,22 +114,22 @@ const UniversityApplicationsManager = ({ studentId, currentUser, isAdmin }) => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
               <div className="form-group">
                 <label>University/Scholarship Name *</label>
-                <input 
-                  type="text" 
-                  name="universityName" 
-                  value={formData.universityName} 
-                  onChange={handleInputChange} 
-                  required 
+                <input
+                  type="text"
+                  name="universityName"
+                  value={formData.universityName}
+                  onChange={handleInputChange}
+                  required
                   className="form-control"
                 />
               </div>
               <div className="form-group">
                 <label>Program Name</label>
-                <input 
-                  type="text" 
-                  name="programName" 
-                  value={formData.programName} 
-                  onChange={handleInputChange} 
+                <input
+                  type="text"
+                  name="programName"
+                  value={formData.programName}
+                  onChange={handleInputChange}
                   className="form-control"
                 />
               </div>
@@ -146,21 +146,21 @@ const UniversityApplicationsManager = ({ studentId, currentUser, isAdmin }) => {
               </div>
               <div className="form-group">
                 <label>Applied Date</label>
-                <input 
-                  type="date" 
-                  name="appliedDate" 
-                  value={formData.appliedDate} 
-                  onChange={handleInputChange} 
+                <input
+                  type="date"
+                  name="appliedDate"
+                  value={formData.appliedDate}
+                  onChange={handleInputChange}
                   className="form-control"
                 />
               </div>
             </div>
             <div className="form-group mt-15">
               <label>Internal Notes (Admin Only)</label>
-              <textarea 
-                name="notes" 
-                value={formData.notes} 
-                onChange={handleInputChange} 
+              <textarea
+                name="notes"
+                value={formData.notes}
+                onChange={handleInputChange}
                 className="form-control"
                 rows="3"
               ></textarea>
@@ -181,13 +181,13 @@ const UniversityApplicationsManager = ({ studentId, currentUser, isAdmin }) => {
         ) : (
           applications.map((app) => (
             <div key={app._id} className={`card shadow-sm transition-all ${expandedId === app._id ? 'border-primary' : ''}`} style={{ padding: '0', overflow: 'hidden' }}>
-              <div 
+              <div
                 className="flex justify-between items-center p-20 cursor-pointer hover-bg-light"
                 onClick={() => toggleExpand(app._id)}
               >
                 <div className="flex gap-15 items-center">
-                  <div style={{ 
-                    width: '45px', height: '45px', borderRadius: '10px', 
+                  <div style={{
+                    width: '45px', height: '45px', borderRadius: '10px',
                     backgroundColor: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     color: 'var(--primary-red)'
                   }}>
@@ -236,9 +236,9 @@ const UniversityApplicationsManager = ({ studentId, currentUser, isAdmin }) => {
 
                   <div className="mt-20">
                     <h5 className="mb-10 flex items-center gap-5"><MessageCircle size={14} /> Application-Specific Remarks</h5>
-                    <RemarksSection 
-                      universityApplicationId={app._id} 
-                      currentUser={currentUser} 
+                    <RemarksSection
+                      universityApplicationId={app._id}
+                      currentUser={currentUser}
                     />
                   </div>
                 </div>

@@ -4,7 +4,7 @@ import { countries } from '../../../utils/countries';
 const ApplicantInfo = ({ data, updateData }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     // Numeric only for CNIC
     if (name === 'cnic') {
       const numericValue = value.replace(/[^\d]/g, '');
@@ -23,13 +23,13 @@ const ApplicantInfo = ({ data, updateData }) => {
       <div className="grid gap-20" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
         <div className="form-group">
           <label className="block mb-10 font-600">First Name <span style={{ color: 'red' }}>*</span></label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="firstName"
             className={isNameInvalid(data?.firstName) ? 'input-error' : ''}
-            value={data?.firstName || ''} 
+            value={data?.firstName || ''}
             onChange={handleChange}
-            placeholder="Enter first name" 
+            placeholder="Enter first name"
             style={{ borderColor: isNameInvalid(data?.firstName) ? 'var(--primary-red)' : '' }}
           />
           {isNameInvalid(data?.firstName) && data?.firstName && (
@@ -38,13 +38,13 @@ const ApplicantInfo = ({ data, updateData }) => {
         </div>
         <div className="form-group">
           <label className="block mb-10 font-600">Last Name <span style={{ color: 'red' }}>*</span></label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="lastName"
             className={isNameInvalid(data?.lastName) ? 'input-error' : ''}
-            value={data?.lastName || ''} 
+            value={data?.lastName || ''}
             onChange={handleChange}
-            placeholder="Enter last name" 
+            placeholder="Enter last name"
             style={{ borderColor: isNameInvalid(data?.lastName) ? 'var(--primary-red)' : '' }}
           />
           {isNameInvalid(data?.lastName) && data?.lastName && (
@@ -53,10 +53,10 @@ const ApplicantInfo = ({ data, updateData }) => {
         </div>
         <div className="form-group">
           <label className="block mb-10 font-600">Date of Birth <span style={{ color: 'red' }}>*</span></label>
-          <input 
-            type="date" 
+          <input
+            type="date"
             name="dob"
-            value={data?.dob ? new Date(data.dob).toISOString().split('T')[0] : ''} 
+            value={data?.dob ? new Date(data.dob).toISOString().split('T')[0] : ''}
             onChange={handleChange}
             style={{ borderColor: !data?.dob ? 'var(--primary-red)' : '' }}
           />
@@ -72,10 +72,10 @@ const ApplicantInfo = ({ data, updateData }) => {
         </div>
         <div className="form-group">
           <label className="block mb-10 font-600">Nationality <span style={{ color: 'red' }}>*</span></label>
-          <select 
-            name="nationality" 
-            value={data?.nationality || ''} 
-            onChange={handleChange} 
+          <select
+            name="nationality"
+            value={data?.nationality || ''}
+            onChange={handleChange}
             style={{ borderColor: !data?.nationality ? 'var(--primary-red)' : '' }}
           >
             <option value="">Select Nationality</option>
@@ -84,12 +84,12 @@ const ApplicantInfo = ({ data, updateData }) => {
         </div>
         <div className="form-group">
           <label className="block mb-10 font-600">CNIC / Passport Number</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="cnic"
-            value={data?.cnic || ''} 
+            value={data?.cnic || ''}
             onChange={handleChange}
-            placeholder="Enter digits only (Optional)" 
+            placeholder="Enter digits only (Optional)"
           />
         </div>
       </div>

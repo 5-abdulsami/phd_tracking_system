@@ -1,8 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  Users, Globe, LayoutDashboard, 
-  ChevronRight, LogOut, Award 
+import {
+  Users, Globe, LayoutDashboard,
+  ChevronRight, LogOut, Award
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -32,11 +32,11 @@ const AdminSidebar = () => {
       zIndex: 90
     }}>
       <div className="sidebar-menu">
-        <p style={{ 
-          fontSize: '0.8rem', 
-          fontWeight: 700, 
-          color: '#9ca3af', 
-          textTransform: 'uppercase', 
+        <p style={{
+          fontSize: '0.8rem',
+          fontWeight: 700,
+          color: '#9ca3af',
+          textTransform: 'uppercase',
           letterSpacing: '0.08em',
           marginBottom: '25px',
           paddingLeft: '10px'
@@ -74,7 +74,7 @@ const AdminSidebar = () => {
       </div>
 
       <div className="sidebar-footer pt-20" style={{ borderTop: '1px solid #f3f4f6' }}>
-        <button 
+        <button
           onClick={logout}
           className="flex items-center gap-10 p-12 w-100 rounded-8 text-red hover-bg-light transition-all"
           style={{ width: '100%', textAlign: 'left', background: 'none' }}

@@ -50,20 +50,20 @@ const NotificationsPage = () => {
           </div>
         ) : (
           notifications.map((notif) => (
-            <div 
-              key={notif._id} 
-              className="card" 
-              style={{ 
-                padding: '20px', display: 'flex', gap: '20px', 
+            <div
+              key={notif._id}
+              className="card"
+              style={{
+                padding: '20px', display: 'flex', gap: '20px',
                 borderLeft: !notif.isRead ? '4px solid var(--primary-red)' : '4px solid #eee',
                 backgroundColor: !notif.isRead ? '#fffdfd' : '#fff'
               }}
             >
-              <div style={{ 
-                backgroundColor: notif.type === 'status_update' ? '#ecfdf5' : '#eff6ff', 
-                color: notif.type === 'status_update' ? '#10b981' : '#3b82f6', 
-                padding: '12px', borderRadius: '50%', height: '48px', width: '48px', 
-                display: 'flex', justifyContent: 'center', alignItems: 'center' 
+              <div style={{
+                backgroundColor: notif.type === 'status_update' ? '#ecfdf5' : '#eff6ff',
+                color: notif.type === 'status_update' ? '#10b981' : '#3b82f6',
+                padding: '12px', borderRadius: '50%', height: '48px', width: '48px',
+                display: 'flex', justifyContent: 'center', alignItems: 'center'
               }}>
                 {notif.type === 'status_update' ? <CheckCircle size={24} /> : <Info size={24} />}
               </div>
@@ -76,7 +76,7 @@ const NotificationsPage = () => {
                 </div>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '10px' }}>{notif.message}</p>
                 {!notif.isRead && (
-                  <button 
+                  <button
                     onClick={() => markAsRead(notif._id)}
                     style={{ background: 'none', color: 'var(--primary-red)', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}
                   >

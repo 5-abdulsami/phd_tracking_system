@@ -3,7 +3,7 @@ import React from 'react';
 const EnglishProficiency = ({ data, updateData }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     // Numeric and dot only for score
     if (name === 'score') {
       const formattedValue = value.replace(/[^\d.]/g, '');
@@ -31,31 +31,31 @@ const EnglishProficiency = ({ data, updateData }) => {
         </div>
         <div className="form-group">
           <label className="block mb-10 font-600">Overall Score / Band <span style={{ color: 'red' }}>*</span></label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="score"
-            value={data?.score || ''} 
+            value={data?.score || ''}
             onChange={handleChange}
-            placeholder="e.g. 7.5" 
+            placeholder="e.g. 7.5"
             style={{ borderColor: isInvalid(data?.score) ? 'var(--primary-red)' : '' }}
           />
         </div>
         <div className="form-group">
           <label className="block mb-10 font-600">Date of Test <span style={{ color: 'red' }}>*</span></label>
-          <input 
-            type="date" 
+          <input
+            type="date"
             name="dateOfTest"
-            value={data?.dateOfTest ? new Date(data.dateOfTest).toISOString().split('T')[0] : ''} 
+            value={data?.dateOfTest ? new Date(data.dateOfTest).toISOString().split('T')[0] : ''}
             onChange={handleChange}
             style={{ borderColor: !data?.dateOfTest ? 'var(--primary-red)' : '' }}
           />
         </div>
         <div className="form-group">
           <label className="block mb-10 font-600">Date of Expiry <span style={{ color: 'red' }}>*</span></label>
-          <input 
-            type="date" 
+          <input
+            type="date"
             name="expiryDate"
-            value={data?.expiryDate ? new Date(data.expiryDate).toISOString().split('T')[0] : ''} 
+            value={data?.expiryDate ? new Date(data.expiryDate).toISOString().split('T')[0] : ''}
             onChange={handleChange}
             style={{ borderColor: !data?.expiryDate ? 'var(--primary-red)' : '' }}
           />

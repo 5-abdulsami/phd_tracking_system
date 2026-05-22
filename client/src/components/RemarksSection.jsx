@@ -17,7 +17,7 @@ const RemarksSection = ({ applicationId, universityApplicationId, currentUser, t
 
   useEffect(() => {
     if (!id) return;
-    
+
     fetchRemarks();
     // Poll for new remarks every 5 seconds
     const interval = setInterval(fetchRemarks, 5000);
@@ -61,7 +61,7 @@ const RemarksSection = ({ applicationId, universityApplicationId, currentUser, t
         const formData = new FormData();
         formData.append('file', attachment);
         formData.append('folder', 'remarks');
-        
+
         const { data: uploadData } = await axios.post('/api/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
@@ -100,9 +100,9 @@ const RemarksSection = ({ applicationId, universityApplicationId, currentUser, t
           <h3 style={{ margin: 0 }}>{title}</h3>
         </div>
 
-        <div className="remarks-list mb-20" style={{ 
-          maxHeight: '400px', 
-          overflowY: 'auto', 
+        <div className="remarks-list mb-20" style={{
+          maxHeight: '400px',
+          overflowY: 'auto',
           padding: '10px',
           display: 'flex',
           flexDirection: 'column',
@@ -112,12 +112,12 @@ const RemarksSection = ({ applicationId, universityApplicationId, currentUser, t
             <p style={{ textAlign: 'center', color: '#999', fontStyle: 'italic', padding: '20px' }}>No remarks yet. Start the conversation!</p>
           ) : (
             remarks.map((remark, idx) => (
-              <div key={idx} className="remark-item" style={{ 
+              <div key={idx} className="remark-item" style={{
                 alignSelf: remark.sender?._id === currentUser?._id ? 'flex-end' : 'flex-start',
                 display: 'flex', flexDirection: 'column', gap: '5px',
                 width: '100%'
               }}>
-                <div style={{ 
+                <div style={{
                   backgroundColor: remark.sender?._id === currentUser?._id ? '#eff6ff' : '#f9fafb',
                   padding: '12px 15px', borderRadius: '12px',
                   border: `1px solid ${remark.sender?._id === currentUser?._id ? '#bfdbfe' : '#e5e7eb'}`,
@@ -134,7 +134,7 @@ const RemarksSection = ({ applicationId, universityApplicationId, currentUser, t
                           remark.senderDesignation
                         ) : (
                           <>
-                            {remark.sender?.email || 'User'} 
+                            {remark.sender?.email || 'User'}
                             <span style={{ fontWeight: 400, color: '#666', marginLeft: '5px', fontSize: '0.75rem' }}>({remark.senderDesignation})</span>
                           </>
                         )
@@ -145,10 +145,10 @@ const RemarksSection = ({ applicationId, universityApplicationId, currentUser, t
                     </span>
                   </div>
                   <p style={{ margin: 0, fontSize: '0.9rem', color: '#374151', whiteSpace: 'pre-wrap' }}>{remark.content}</p>
-                  
+
                   {remark.attachmentUrl && (
                     <div className="mt-10 pt-10" style={{ borderTop: '1px solid #ddd' }}>
-                      <a href={remark.attachmentUrl} target="_blank" rel="noopener noreferrer" 
+                      <a href={remark.attachmentUrl} target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-5" style={{ fontSize: '0.8rem', color: '#2563eb', textDecoration: 'none', fontWeight: 600 }}>
                         <Download size={14} /> {remark.attachmentName || 'Download Attachment'}
                       </a>
@@ -167,22 +167,22 @@ const RemarksSection = ({ applicationId, universityApplicationId, currentUser, t
               placeholder="Leave a note or update here..."
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              style={{ 
-                width: '100%', padding: '12px 15px', borderRadius: '8px', 
+              style={{
+                width: '100%', padding: '12px 15px', borderRadius: '8px',
                 border: '1px solid #e5e7eb', minHeight: '80px', marginBottom: '10px',
                 fontSize: '0.9rem', resize: 'vertical'
               }}
             />
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-10">
-                <input 
-                  type="file" 
+                <input
+                  type="file"
                   ref={fileInputRef}
                   onChange={handleFileChange}
                   style={{ display: 'none' }}
                 />
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   onClick={() => fileInputRef.current?.click()}
                   className="flex items-center gap-5 btn-light"
                   style={{ padding: '6px 12px', fontSize: '0.85rem', borderRadius: '6px' }}
@@ -199,8 +199,8 @@ const RemarksSection = ({ applicationId, universityApplicationId, currentUser, t
                   </div>
                 )}
               </div>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 disabled={loading || uploading || (!content.trim() && !attachment)}
                 className="btn btn-primary flex items-center gap-10"
                 style={{ padding: '8px 20px', borderRadius: '8px' }}

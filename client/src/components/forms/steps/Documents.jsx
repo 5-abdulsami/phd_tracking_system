@@ -16,7 +16,7 @@ const Documents = ({ data = {}, updateData }) => {
     }
 
     setUploading({ ...uploading, [type]: true });
-    
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('folder', 'documents');
@@ -25,7 +25,7 @@ const Documents = ({ data = {}, updateData }) => {
       const { data: uploadRes } = await axios.post('/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      
+
       updateData('documents', { ...data, [type]: uploadRes.url });
     } catch (err) {
       alert('Upload failed: ' + (err.response?.data?.message || 'Server error'));
@@ -74,8 +74,8 @@ const Documents = ({ data = {}, updateData }) => {
                 </div>
               ) : data[doc.key] ? (
                 <div className="flex gap-10">
-                   <a href={data[doc.key]} target="_blank" rel="noreferrer" className="btn" style={{ padding: '5px 15px', fontSize: '0.8rem', border: '1px solid #ddd' }}>View</a>
-                   <label style={{ cursor: 'pointer', fontSize: '0.8rem', color: 'var(--primary-red)', fontWeight: 600 }}>
+                  <a href={data[doc.key]} target="_blank" rel="noreferrer" className="btn" style={{ padding: '5px 15px', fontSize: '0.8rem', border: '1px solid #ddd' }}>View</a>
+                  <label style={{ cursor: 'pointer', fontSize: '0.8rem', color: 'var(--primary-red)', fontWeight: 600 }}>
                     Replace
                     <input type="file" style={{ display: 'none' }} onChange={(e) => handleFileUpload(e, doc.key)} />
                   </label>

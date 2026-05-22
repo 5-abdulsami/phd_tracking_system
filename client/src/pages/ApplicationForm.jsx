@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from '../utils/axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { 
+import {
   ChevronLeft, ChevronRight, Save, Check,
-  User, Phone, Users, GraduationCap, BookOpen, 
-  FlaskConical, Languages, BadgeDollarSign, Star, 
-  FolderOpen, ClipboardCheck 
+  User, Phone, Users, GraduationCap, BookOpen,
+  FlaskConical, Languages, BadgeDollarSign, Star,
+  FolderOpen, ClipboardCheck
 } from 'lucide-react';
 import ApplicantInfo from '../components/forms/steps/ApplicantInfo';
 import ContactDetails from '../components/forms/steps/ContactDetails';
@@ -60,9 +60,9 @@ const ApplicationForm = () => {
     if (!section) return false;
 
     if (key === 'applicantInfo') {
-      return !!(section.firstName && section.firstName.length >= 3 && 
-                section.lastName && section.lastName.length >= 3 && 
-                section.dob && section.gender && section.nationality);
+      return !!(section.firstName && section.firstName.length >= 3 &&
+        section.lastName && section.lastName.length >= 3 &&
+        section.dob && section.gender && section.nationality);
     }
     if (key === 'contactDetails') {
       return !!(section.phone && section.email && section.address && section.city && section.country);
@@ -121,7 +121,7 @@ const ApplicationForm = () => {
     setIsSaving(true);
     try {
       const response = await axios.put(`/api/applications/me/section/${currentSectionKey}`, formData[currentSectionKey]);
-      setFormData(response.data); 
+      setFormData(response.data);
     } catch (err) {
       console.error('Error saving section');
     } finally {
@@ -171,7 +171,7 @@ const ApplicationForm = () => {
                 const isActive = step === index + 1;
                 const isComplete = isSectionComplete(s.key);
                 const isPartial = isSectionPartial(s.key);
-                
+
                 let bgColor = 'transparent';
                 let borderColor = 'transparent';
                 let iconBg = '#e5e7eb';
@@ -192,8 +192,8 @@ const ApplicationForm = () => {
                 }
 
                 return (
-                  <li key={index} style={{ 
-                    padding: '15px 20px', 
+                  <li key={index} style={{
+                    padding: '15px 20px',
                     borderBottom: index < steps.length - 1 ? '1px solid var(--border-color)' : 'none',
                     display: 'flex', alignItems: 'center', gap: '12px',
                     backgroundColor: bgColor,
@@ -203,20 +203,20 @@ const ApplicationForm = () => {
                     cursor: 'pointer',
                     transition: 'all 0.2s ease'
                   }} onClick={() => setStep(index + 1)}>
-                    <div style={{ 
-                      width: '28px', height: '28px', borderRadius: '50%', 
+                    <div style={{
+                      width: '28px', height: '28px', borderRadius: '50%',
                       backgroundColor: iconBg,
                       color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '12px'
                     }}>
                       {isComplete ? <Check size={16} /> : s.icon}
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                       <span style={{ fontSize: '0.9rem' }}>{s.title}</span>
-                       {isComplete ? (
-                         <span style={{ fontSize: '0.7rem', color: 'var(--success)' }}>Completed</span>
-                       ) : isPartial ? (
-                         <span style={{ fontSize: '0.7rem', color: 'var(--warning)' }}>Incomplete</span>
-                       ) : null}
+                      <span style={{ fontSize: '0.9rem' }}>{s.title}</span>
+                      {isComplete ? (
+                        <span style={{ fontSize: '0.7rem', color: 'var(--success)' }}>Completed</span>
+                      ) : isPartial ? (
+                        <span style={{ fontSize: '0.7rem', color: 'var(--warning)' }}>Incomplete</span>
+                      ) : null}
                     </div>
                   </li>
                 );
@@ -234,48 +234,48 @@ const ApplicationForm = () => {
             </div>
 
             <div className="step-component" style={{ minHeight: '400px' }}>
-               {step === 1 && <ApplicantInfo data={formData.applicantInfo} updateData={updateFormData} />}
-               {step === 2 && <ContactDetails data={formData.contactDetails} updateData={updateFormData} />}
-               {step === 3 && <GuardianInfo data={formData.guardianInfo} updateData={updateFormData} />}
-               {step === 4 && <AcademicBackground data={formData.academicBackground} updateData={updateFormData} />}
-               {step === 5 && <ProgramInfo data={formData.programInfo} updateData={updateFormData} />}
-               {step === 6 && <ResearchExperience data={formData.researchExperience} updateData={updateFormData} />}
-               {step === 7 && <EnglishProficiency data={formData.englishProficiency} updateData={updateFormData} />}
-               {step === 8 && <FundingInfo data={formData.fundingInfo} updateData={updateFormData} />}
-               {step === 9 && <Referees data={formData.referees} updateData={updateFormData} />}
-               {step === 10 && <Documents data={formData.documents} updateData={updateFormData} />}
-               {step === 11 && (
-                 <Declaration 
-                   data={formData.declaration} 
-                   updateData={updateFormData} 
-                   canSubmit={formData.completionPercentage === 100}
-                   incompleteSections={getIncompleteSections()}
-                   onSubmit={submitApplication}
-                 />
-               )}
+              {step === 1 && <ApplicantInfo data={formData.applicantInfo} updateData={updateFormData} />}
+              {step === 2 && <ContactDetails data={formData.contactDetails} updateData={updateFormData} />}
+              {step === 3 && <GuardianInfo data={formData.guardianInfo} updateData={updateFormData} />}
+              {step === 4 && <AcademicBackground data={formData.academicBackground} updateData={updateFormData} />}
+              {step === 5 && <ProgramInfo data={formData.programInfo} updateData={updateFormData} />}
+              {step === 6 && <ResearchExperience data={formData.researchExperience} updateData={updateFormData} />}
+              {step === 7 && <EnglishProficiency data={formData.englishProficiency} updateData={updateFormData} />}
+              {step === 8 && <FundingInfo data={formData.fundingInfo} updateData={updateFormData} />}
+              {step === 9 && <Referees data={formData.referees} updateData={updateFormData} />}
+              {step === 10 && <Documents data={formData.documents} updateData={updateFormData} />}
+              {step === 11 && (
+                <Declaration
+                  data={formData.declaration}
+                  updateData={updateFormData}
+                  canSubmit={formData.completionPercentage === 100}
+                  incompleteSections={getIncompleteSections()}
+                  onSubmit={submitApplication}
+                />
+              )}
             </div>
 
             <div className="form-actions mt-20 flex justify-between" style={{ borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
-              <button onClick={prevStep} disabled={step === 1} className="btn-dark" style={{ 
+              <button onClick={prevStep} disabled={step === 1} className="btn-dark" style={{
                 padding: '10px 25px', borderRadius: '4px', opacity: step === 1 ? 0.5 : 1, display: 'flex', alignItems: 'center', gap: '8px'
               }}>
                 <ChevronLeft size={18} /> Previous
               </button>
-              
+
               <div className="flex gap-10">
-                <button onClick={saveCurrentSection} className="btn" style={{ 
+                <button onClick={saveCurrentSection} className="btn" style={{
                   backgroundColor: '#f3f4f6', color: '#666', border: '1px solid #ddd', padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '8px'
                 }}>
                   {isSaving ? 'Saving...' : <><Save size={18} /> Save Progress</>}
                 </button>
-                
+
                 {step < 11 ? (
                   <button onClick={nextStep} className="btn btn-primary" style={{ padding: '10px 25px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     Next <ChevronRight size={18} />
                   </button>
                 ) : (
                   <div style={{ color: 'var(--success)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}>
-                     Final Review Phase <Check size={20} />
+                    Final Review Phase <Check size={20} />
                   </div>
                 )}
               </div>

@@ -24,9 +24,9 @@ const Referees = ({ data = [], updateData }) => {
 
   return (
     <div className="section-form">
-       <p className="mb-20" style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+      <p className="mb-20" style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
         Please provide details for at least <strong>two (2)</strong> academic or professional referees. (Max 3)
-       </p>
+      </p>
       {data.map((item, index) => (
         <div key={index} className="card mb-20" style={{ backgroundColor: '#f9fafb', border: '1px solid #eee' }}>
           <div className="flex justify-between items-center mb-15">
@@ -38,78 +38,78 @@ const Referees = ({ data = [], updateData }) => {
           <div className="grid gap-20" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
             <div className="form-group">
               <label className="block mb-10 font-600">Full Name <span style={{ color: 'red' }}>*</span></label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="name"
-                value={item.name} 
+                value={item.name}
                 onChange={(e) => handleChange(index, e)}
-                placeholder="Enter referee name" 
+                placeholder="Enter referee name"
                 style={{ borderColor: isInvalid(item.name) ? 'var(--primary-red)' : '' }}
               />
             </div>
             <div className="form-group">
               <label className="block mb-10 font-600">Designation <span style={{ color: 'red' }}>*</span></label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="designation"
-                value={item.designation} 
+                value={item.designation}
                 onChange={(e) => handleChange(index, e)}
-                placeholder="e.g. Professor, Manager" 
+                placeholder="e.g. Professor, Manager"
                 style={{ borderColor: isInvalid(item.designation) ? 'var(--primary-red)' : '' }}
               />
             </div>
             <div className="form-group">
               <label className="block mb-10 font-600">Institution / Organization <span style={{ color: 'red' }}>*</span></label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="institution"
-                value={item.institution} 
+                value={item.institution}
                 onChange={(e) => handleChange(index, e)}
-                placeholder="University or company" 
+                placeholder="University or company"
                 style={{ borderColor: isInvalid(item.institution) ? 'var(--primary-red)' : '' }}
               />
             </div>
-             <div className="form-group">
+            <div className="form-group">
               <label className="block mb-10 font-600">Relationship <span style={{ color: 'red' }}>*</span></label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="relation"
-                value={item.relation} 
+                value={item.relation}
                 onChange={(e) => handleChange(index, e)}
-                placeholder="e.g. Supervisor, HoD" 
+                placeholder="e.g. Supervisor, HoD"
                 style={{ borderColor: isInvalid(item.relation) ? 'var(--primary-red)' : '' }}
               />
             </div>
             <div className="form-group">
               <label className="block mb-10 font-600">Email Address <span style={{ color: 'red' }}>*</span></label>
-              <input 
-                type="email" 
+              <input
+                type="email"
                 name="email"
-                value={item.email} 
+                value={item.email}
                 onChange={(e) => handleChange(index, e)}
-                placeholder="Official email address" 
+                placeholder="Official email address"
                 style={{ borderColor: isEmailInvalid(item.email) ? 'var(--primary-red)' : '' }}
               />
             </div>
             <div className="form-group">
               <label className="block mb-10 font-600">Phone Number <span style={{ color: 'red' }}>*</span></label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="phone"
-                value={item.phone} 
+                value={item.phone}
                 onChange={(e) => handleChange(index, e)}
-                placeholder="Contact number" 
+                placeholder="Contact number"
                 style={{ borderColor: isInvalid(item.phone) ? 'var(--primary-red)' : '' }}
               />
             </div>
           </div>
         </div>
       ))}
-      
+
       {data.length < 3 && (
-        <button 
-          onClick={addReferee} 
-          className="btn flex items-center gap-10" 
+        <button
+          onClick={addReferee}
+          className="btn flex items-center gap-10"
           style={{ border: '1px dashed var(--primary-red)', color: 'var(--primary-red)', padding: '12px 25px', backgroundColor: 'transparent', margin: '0 auto', display: 'flex' }}
         >
           <Plus size={18} /> Add Referee
