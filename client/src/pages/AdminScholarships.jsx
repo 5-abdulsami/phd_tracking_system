@@ -245,19 +245,18 @@ const AdminScholarships = () => {
             scholarships.map(scholarship => (
               <div key={scholarship._id} className="overflow-hidden bg-white rounded-8 mb-15 transition-all" style={{ border: '1px solid #e5e7eb', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
                 <div
-                  className="p-15 flex justify-between items-center cursor-pointer"
+                  className="p-15 flex justify-between items-center cursor-pointer hover:bg-gray-50 transition-colors"
                   style={{
-                    backgroundColor: 'var(--primary-red)',
-                    color: '#fff',
-                    borderBottom: '1px solid #ffffff20'
+                    backgroundColor: '#ffffff',
+                    borderBottom: '1px solid #e5e7eb'
                   }}
                   onClick={() => setExpandedId(expandedId === scholarship._id ? null : scholarship._id)}
                 >
-                  <div className="flex items-center gap-16">
-                    <Award size={24} color="#fff" />
+                  <div className="flex items-center gap-24">
+                    <Award size={24} style={{ marginRight: '10px' }} color="var(--primary-red)" />
                     <div>
-                      <h4 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: '#fff' }}>{scholarship.title}</h4>
-                      <div style={{ display: 'flex', gap: '8px', fontSize: '0.9rem', color: '#ffe4e6', marginTop: '4px' }}>
+                      <h4 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: '#111827' }}>{scholarship.title}</h4>
+                      <div style={{ display: 'flex', gap: '8px', fontSize: '0.9rem', color: '#4b5563', marginTop: '4px' }}>
                         <span style={{ fontWeight: 600 }}>{scholarship.university}</span>
                         <span>•</span>
                         <span>{scholarship.country}</span>
@@ -267,28 +266,28 @@ const AdminScholarships = () => {
                   <div className="flex items-center gap-15">
                     <span style={{
                       padding: '5px 12px', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 700,
-                      backgroundColor: '#fff', color: 'var(--primary-red)'
+                      backgroundColor: '#eff6ff', color: '#1e40af'
                     }}>
                       {scholarship.fundedBy}
                     </span>
                     <span style={{
                       padding: '5px 12px', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 700,
-                      backgroundColor: '#fff', color: '#c2410c'
+                      backgroundColor: '#fff7ed', color: '#c2410c'
                     }}>
                       Deadline: {new Date(scholarship.deadline).toLocaleDateString()}
                     </span>
                     <div className="flex gap-8">
-                      <button onClick={(e) => { e.stopPropagation(); handleEdit(scholarship); }} className="btn-light p-6 rounded" style={{ padding: '6px', backgroundColor: '#ffffff20', color: '#fff' }}><Edit2 size={16} /></button>
-                      <button onClick={(e) => { e.stopPropagation(); handleDelete(scholarship._id); }} className="btn-light p-6 rounded" style={{ padding: '6px', backgroundColor: '#ffffff20', color: '#fff' }}><Trash2 size={16} /></button>
+                      <button onClick={(e) => { e.stopPropagation(); handleEdit(scholarship); }} className="btn-light p-6 rounded hover:bg-gray-100" style={{ padding: '6px', backgroundColor: '#f3f4f6', color: '#4b5563', border: 'none' }}><Edit2 size={16} /></button>
+                      <button onClick={(e) => { e.stopPropagation(); handleDelete(scholarship._id); }} className="btn-light p-6 rounded hover:bg-gray-100" style={{ padding: '6px', backgroundColor: '#f3f4f6', color: '#ef4444', border: 'none' }}><Trash2 size={16} /></button>
                     </div>
-                    {expandedId === scholarship._id ? <ChevronUp size={20} color="#fff" /> : <ChevronDown size={20} color="#fff" />}
+                    {expandedId === scholarship._id ? <ChevronUp size={20} color="#4b5563" /> : <ChevronDown size={20} color="#4b5563" />}
                   </div>
                 </div>
 
                 {expandedId === scholarship._id && (
-                  <div className="p-20 pt-0 border-top bg-white">
-                    <div className="mt-15 grid grid-cols-2 gap-20">
-                      <div className="p-12 bg-gray-50 rounded-6" style={{ borderLeft: '5px solid var(--primary-red)', paddingLeft: '20px' }}>
+                  <div className="p-20 border-top bg-white">
+                    <div className="grid grid-cols-2 gap-20">
+                      <div className="p-15 bg-gray-50 rounded-8" style={{ border: '1px solid #e5e7eb', borderLeft: '5px solid var(--primary-red)', paddingLeft: '20px' }}>
                         <h5 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--primary-red)', marginBottom: '8px' }}>Degree Levels</h5>
                         <div className="flex gap-5 flex-wrap">
                           {scholarship.degreeLevels.map(level => (
@@ -296,34 +295,25 @@ const AdminScholarships = () => {
                           ))}
                         </div>
                       </div>
-                      <div className="p-12 bg-gray-50 rounded-6" style={{ borderLeft: '5px solid #1e40af', paddingLeft: '20px' }}>
+                      <div className="p-15 bg-gray-50 rounded-8" style={{ border: '1px solid #e5e7eb', borderLeft: '5px solid #1e40af', paddingLeft: '20px' }}>
                         <h5 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1e40af', marginBottom: '8px' }}>Funding Status</h5>
                         <p style={{ fontSize: '1.05rem', margin: 0, color: '#111827', fontWeight: 600 }}>{scholarship.fundedBy}</p>
                       </div>
                     </div>
 
-                    <div className="mt-35">
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' }}>
-                        <div style={{ width: '5px', height: '20px', backgroundColor: 'var(--primary-red)', borderRadius: '2px' }}></div>
-                        <h5 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--primary-red)', margin: 0 }}>Scholarship Benefits</h5>
-                      </div>
-                      <p style={{ fontSize: '1.05rem', margin: 0, color: '#374151', lineHeight: '1.6', paddingLeft: '21px' }}>{scholarship.benefits}</p>
+                    <div className="mt-20 p-15 bg-gray-50 rounded-8" style={{ border: '1px solid #e5e7eb', borderLeft: '5px solid var(--primary-red)', paddingLeft: '20px' }}>
+                      <h5 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--primary-red)', marginBottom: '8px' }}>Scholarship Benefits</h5>
+                      <p style={{ fontSize: '1.05rem', margin: 0, color: '#374151', lineHeight: '1.6' }}>{scholarship.benefits}</p>
                     </div>
 
-                    <div className="mt-35">
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' }}>
-                        <div style={{ width: '5px', height: '20px', backgroundColor: '#1e40af', borderRadius: '2px' }}></div>
-                        <h5 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#1e40af', margin: 0 }}>Eligibility Criteria</h5>
-                      </div>
-                      <p style={{ fontSize: '1.05rem', margin: 0, color: '#374151', lineHeight: '1.6', paddingLeft: '21px' }}>{scholarship.eligibilityCriteria}</p>
+                    <div className="mt-20 p-15 bg-gray-50 rounded-8" style={{ border: '1px solid #e5e7eb', borderLeft: '5px solid #1e40af', paddingLeft: '20px' }}>
+                      <h5 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1e40af', marginBottom: '8px' }}>Eligibility Criteria</h5>
+                      <p style={{ fontSize: '1.05rem', margin: 0, color: '#374151', lineHeight: '1.6' }}>{scholarship.eligibilityCriteria}</p>
                     </div>
 
-                    <div className="mt-35">
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '12px' }}>
-                        <div style={{ width: '5px', height: '20px', backgroundColor: '#4b5563', borderRadius: '2px' }}></div>
-                        <h5 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#4b5563', margin: 0 }}>Description</h5>
-                      </div>
-                      <p style={{ fontSize: '1.05rem', margin: 0, color: '#374151', lineHeight: '1.6', paddingLeft: '21px' }}>{scholarship.description}</p>
+                    <div className="mt-20 p-15 bg-gray-50 rounded-8" style={{ border: '1px solid #e5e7eb', borderLeft: '5px solid #4b5563', paddingLeft: '20px' }}>
+                      <h5 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#4b5563', marginBottom: '8px' }}>Description</h5>
+                      <p style={{ fontSize: '1.05rem', margin: 0, color: '#374151', lineHeight: '1.6' }}>{scholarship.description}</p>
                     </div>
                   </div>
                 )}
