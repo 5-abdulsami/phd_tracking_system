@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
 // Request interceptor to add token to headers
 axiosInstance.interceptors.request.use(
   (config) => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = sessionStorage.getItem('user');
     if (storedUser) {
       const { token } = JSON.parse(storedUser);
       config.headers.Authorization = `Bearer ${token}`;
@@ -21,6 +21,24 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor to handle unauthorized errors (session expiry)
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    // If the server returns 401 Unauthorized, automatically log out
+    if (error.response && error.response.status === 401) {
+      sessionStorage.removeItem('user');
+      // If we are not already on the login/landing pages, redirect
+      if (!window.location.pathname.includes('/login') && window.location.pathname !== '/') {
+        window.location.href = '/login';
+      }
+    }
     return Promise.reject(error);
   }
 );

@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = sessionStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -18,27 +18,27 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const { data } = await axios.post('/api/auth/login', { email, password });
     setUser(data);
-    localStorage.setItem('user', JSON.stringify(data));
+    sessionStorage.setItem('user', JSON.stringify(data));
     return data;
   };
 
   const loginWithGoogle = async (credential) => {
     const { data } = await axios.post('/api/auth/google', { credential });
     setUser(data);
-    localStorage.setItem('user', JSON.stringify(data));
+    sessionStorage.setItem('user', JSON.stringify(data));
     return data;
   };
 
   const register = async (email, password) => {
     const { data } = await axios.post('/api/auth/register', { email, password });
     setUser(data);
-    localStorage.setItem('user', JSON.stringify(data));
+    sessionStorage.setItem('user', JSON.stringify(data));
     return data;
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('user');
   };
 
   return (
