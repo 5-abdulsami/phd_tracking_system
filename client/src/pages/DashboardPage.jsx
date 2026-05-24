@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../utils/axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { FileText, CheckCircle, Clock, AlertCircle, ArrowRight, MessageSquare } from 'lucide-react';
+import { FileText, CheckCircle, Clock, AlertCircle, ArrowRight, MessageSquare, Award, Filter, RefreshCw, Send } from 'lucide-react';
 import RemarksSection from '../components/RemarksSection';
 import UniversityApplicationsManager from '../components/UniversityApplicationsManager';
 
@@ -51,8 +51,19 @@ const isSectionComplete = (key, section) => {
 const DashboardPage = () => {
   const [application, setApplication] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [scholarships, setScholarships] = useState([]);
+  const [appliedScholarships, setAppliedScholarships] = useState(new Set());
+  const [scholarshipsLoading, setScholarshipsLoading] = useState(true);
+  const [appsTrigger, setAppsTrigger] = useState(0);
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // Filters state for scholarships
+  const [filters, setFilters] = useState({
+    country: '',
+    degreeLevels: 'all',
+    studyArea: ''
+  });
 
   useEffect(() => {
     const fetchApplication = async () => {
@@ -68,6 +79,83 @@ const DashboardPage = () => {
 
     fetchApplication();
   }, []);
+
+  useEffect(() => {
+    if (user?._id) {
+      fetchScholarshipsAndApps();
+    }
+  }, [user?._id, appsTrigger]);
+
+  const fetchScholarshipsAndApps = async (currentFilters = filters) => {
+    try {
+      setScholarshipsLoading(true);
+      
+      // Build query string
+      const params = new URLSearchParams();
+      if (currentFilters.country) params.append('country', currentFilters.country);
+      if (currentFilters.studyArea) params.append('studyArea', currentFilters.studyArea);
+      if (currentFilters.degreeLevels && currentFilters.degreeLevels !== 'all') {
+        params.append('degreeLevels', currentFilters.degreeLevels);
+      }
+
+      // Fetch matching scholarships
+      const { data: scholData } = await axios.get(`/api/scholarships?${params.toString()}`);
+      setScholarships(scholData);
+
+      // Fetch existing applications to check duplicates
+      const { data: appsData } = await axios.get(`/api/university-applications/student/${user._id}`);
+      const appliedSet = new Set(appsData.map(app => `${app.universityName.trim()}||${app.programName.trim()}`));
+      setAppliedScholarships(appliedSet);
+    } catch (err) {
+      console.error('Error fetching scholarships/applications:', err);
+    } finally {
+      setScholarshipsLoading(false);
+    }
+  };
+
+  const handleFilterChange = (e) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  };
+
+  const applyFilters = (e) => {
+    e.preventDefault();
+    fetchScholarshipsAndApps(filters);
+  };
+
+  const resetFilters = () => {
+    const defaultFilters = {
+      country: '',
+      degreeLevels: 'all',
+      studyArea: ''
+    };
+    setFilters(defaultFilters);
+    fetchScholarshipsAndApps(defaultFilters);
+  };
+
+  const handleApplyToScholarship = async (scholarship) => {
+    if (!window.confirm(`Are you sure you want to apply to: ${scholarship.title}?`)) {
+      return;
+    }
+
+    try {
+      const payload = {
+        student: user._id,
+        universityName: scholarship.university,
+        programName: scholarship.title,
+        status: 'Pending',
+        appliedDate: new Date(),
+        notes: `Applied online through Browse Scholarships panel. Study Area: ${scholarship.studyArea}.`
+      };
+
+      await axios.post('/api/university-applications', payload);
+      alert('Application submitted successfully! It is now listed under your applications below for review.');
+      
+      // Update local trigger to sync everything
+      setAppsTrigger(prev => prev + 1);
+    } catch (err) {
+      alert('Failed to submit application. Try again.');
+    }
+  };
 
   if (loading) return (
     <div className="container mt-20" style={{ textAlign: 'center', padding: '50px' }}>
@@ -89,7 +177,6 @@ const DashboardPage = () => {
 
   const status = getStatusDisplay(application?.status);
 
-  // Helper for color based on percentage
   const getStrengthColor = (percent) => {
     if (percent >= 80) return '#10b981';
     if (percent >= 50) return '#f59e0b';
@@ -140,7 +227,7 @@ const DashboardPage = () => {
             </button>
           </div>
 
-          <div className="dashboard-sections mb-20">
+          <div className="dashboard-sections mb-30">
             <div className="card" style={{ display: 'flex', gap: '15px', borderLeft: `5px solid ${getStrengthColor(application?.profileStrength || 0)}` }}>
               <div style={{ backgroundColor: '#f0fdf4', padding: '10px', borderRadius: '8px', color: getStrengthColor(application?.profileStrength || 0) }}>
                 <CheckCircle size={24} />
@@ -162,12 +249,103 @@ const DashboardPage = () => {
             </div>
           </div>
 
+          {/* New Section: Available Scholarships Filtering & Applying */}
+          <div className="card mb-30 shadow-sm" style={{ borderLeft: '4px solid var(--primary-red)' }}>
+            <div className="flex justify-between items-center mb-20">
+              <h3 style={{ fontSize: '1.2rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Award size={20} color="var(--primary-red)" />
+                Browse & Apply for Scholarships
+              </h3>
+            </div>
+
+            {/* Filter toolbar */}
+            <form onSubmit={applyFilters} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '20px', padding: '12px', backgroundColor: '#f9fafb', borderRadius: '8px' }}>
+              <input
+                name="country"
+                value={filters.country}
+                onChange={handleFilterChange}
+                placeholder="Filter by Country"
+                style={{ flex: 1, minWidth: '120px', height: '36px', fontSize: '0.85rem' }}
+              />
+              <select
+                name="degreeLevels"
+                value={filters.degreeLevels}
+                onChange={handleFilterChange}
+                style={{ flex: 1, minWidth: '120px', height: '36px', fontSize: '0.85rem', padding: '0 8px', border: '1px solid #ddd', borderRadius: '4px' }}
+              >
+                <option value="all">Degree Level (All)</option>
+                <option value="PhD">PhD</option>
+                <option value="Postdoctoral">Postdoctoral</option>
+                <option value="Masters">Masters</option>
+              </select>
+              <input
+                name="studyArea"
+                value={filters.studyArea}
+                onChange={handleFilterChange}
+                placeholder="Filter by Study Area"
+                style={{ flex: 1, minWidth: '120px', height: '36px', fontSize: '0.85rem' }}
+              />
+              <div style={{ display: 'flex', gap: '5px' }}>
+                <button type="submit" className="btn btn-primary" style={{ padding: '0 15px', height: '36px', fontSize: '0.85rem' }}>Search</button>
+                <button type="button" onClick={resetFilters} className="btn-light" style={{ padding: '0 15px', height: '36px', fontSize: '0.85rem', border: '1px solid #ddd' }}>Reset</button>
+              </div>
+            </form>
+
+            {/* Scholarship Matching Cards */}
+            {scholarshipsLoading ? (
+              <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>Matching scholarships...</div>
+            ) : scholarships.length === 0 ? (
+              <div style={{ padding: '25px', textAlign: 'center', color: '#999', border: '1px dashed #ddd', borderRadius: '8px' }}>
+                No active scholarships match your search criteria.
+              </div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '15px' }}>
+                {scholarships.map(scholarship => {
+                  const alreadyApplied = appliedScholarships.has(`${scholarship.university.trim()}||${scholarship.title.trim()}`);
+                  return (
+                    <div key={scholarship._id} style={{ display: 'flex', gap: '12px', border: '1px solid #e5e7eb', padding: '15px', borderRadius: '8px', backgroundColor: 'white' }}>
+                      {scholarship.thumbnail ? (
+                        <img src={scholarship.thumbnail} alt={scholarship.title} style={{ width: '60px', height: '60px', borderRadius: '6px', objectFit: 'cover' }} />
+                      ) : (
+                        <div style={{ width: '60px', height: '60px', borderRadius: '6px', backgroundColor: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-red)' }}>
+                          <Award size={24} />
+                        </div>
+                      )}
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div>
+                          <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#111827' }}>{scholarship.title}</h4>
+                          <p style={{ margin: '2px 0 6px 0', fontSize: '0.8rem', color: '#666' }}>{scholarship.university} ({scholarship.country})</p>
+                          <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                            <span style={{ fontSize: '0.7rem', padding: '2px 6px', backgroundColor: '#eff6ff', color: '#1e40af', borderRadius: '3px', fontWeight: 600 }}>{scholarship.studyArea}</span>
+                            <span style={{ fontSize: '0.7rem', padding: '2px 6px', backgroundColor: '#ecfdf5', color: '#065f46', borderRadius: '3px', fontWeight: 600 }}>{scholarship.fundedBy} Funded</span>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '5px', borderTop: '1px solid #f3f4f6', paddingTop: '8px' }}>
+                          <span style={{ fontSize: '0.7rem', color: '#dc2626' }}>Deadline: {new Date(scholarship.deadline).toLocaleDateString()}</span>
+                          <button
+                            onClick={() => handleApplyToScholarship(scholarship)}
+                            disabled={alreadyApplied}
+                            className={alreadyApplied ? 'btn-light btn-sm' : 'btn btn-primary btn-sm'}
+                            style={{ padding: '4px 10px', fontSize: '0.75rem', height: '26px' }}
+                          >
+                            {alreadyApplied ? 'Applied' : 'Apply'}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           {/* University Applications for Student */}
           {user?._id && (
             <UniversityApplicationsManager
               studentId={user._id}
               currentUser={user}
               isAdmin={false}
+              key={appsTrigger}
             />
           )}
 

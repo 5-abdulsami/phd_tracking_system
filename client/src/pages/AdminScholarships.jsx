@@ -19,7 +19,8 @@ const AdminScholarships = () => {
     country: '',
     university: '',
     fundedBy: '',
-    degreeLevels: ''
+    degreeLevels: '',
+    studyArea: ''
   });
 
   const [formData, setFormData] = useState({
@@ -31,8 +32,12 @@ const AdminScholarships = () => {
     degreeLevels: '',
     benefits: '',
     eligibilityCriteria: '',
-    description: ''
+    description: '',
+    studyArea: '',
+    thumbnail: ''
   });
+
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchScholarships();
@@ -75,10 +80,38 @@ const AdminScholarships = () => {
       country: '',
       university: '',
       fundedBy: '',
-      degreeLevels: ''
+      degreeLevels: '',
+      studyArea: ''
     };
     setFilters(defaultFilters);
     fetchScholarships(defaultFilters);
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size too large. Max 5MB allowed.');
+      return;
+    }
+
+    setUploading(true);
+
+    const uploadFormData = new FormData();
+    uploadFormData.append('file', file);
+    uploadFormData.append('folder', 'scholarships');
+
+    try {
+      const { data: uploadRes } = await axios.post('/api/upload', uploadFormData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      setFormData(prev => ({ ...prev, thumbnail: uploadRes.url }));
+    } catch (err) {
+      alert('Upload failed: ' + (err.response?.data?.message || 'Server error'));
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -104,7 +137,9 @@ const AdminScholarships = () => {
         degreeLevels: '',
         benefits: '',
         eligibilityCriteria: '',
-        description: ''
+        description: '',
+        studyArea: '',
+        thumbnail: ''
       });
       fetchScholarships();
     } catch (err) {
@@ -180,6 +215,24 @@ const AdminScholarships = () => {
                   <label>Degree Levels *</label>
                   <input name="degreeLevels" value={formData.degreeLevels} onChange={handleInputChange} placeholder="e.g., PhD, Masters (comma separated)" required />
                 </div>
+                <div className="form-group">
+                  <label>Study Area *</label>
+                  <input name="studyArea" value={formData.studyArea} onChange={handleInputChange} placeholder="e.g., Computer Science, Engineering, Medical Sciences" required />
+                </div>
+                <div className="form-group">
+                  <label>Scholarship Thumbnail / Image</label>
+                  <div style={{ display: 'flex', gap: '15px', alignItems: 'center', marginTop: '5px' }}>
+                    {formData.thumbnail ? (
+                      <img src={formData.thumbnail} alt="Thumbnail Preview" style={{ width: '60px', height: '60px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #ddd' }} />
+                    ) : (
+                      <div style={{ width: '60px', height: '60px', borderRadius: '8px', backgroundColor: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', color: '#888', border: '1px dashed #ccc' }}>No Image</div>
+                    )}
+                    <label className="btn btn-primary" style={{ padding: '8px 16px', fontSize: '0.8rem', cursor: 'pointer', margin: 0 }}>
+                      {uploading ? 'Uploading...' : 'Upload Image'}
+                      <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleImageUpload} disabled={uploading} />
+                    </label>
+                  </div>
+                </div>
               </div>
 
               <div className="form-group mt-15">
@@ -210,7 +263,9 @@ const AdminScholarships = () => {
                     degreeLevels: '',
                     benefits: '',
                     eligibilityCriteria: '',
-                    description: ''
+                    description: '',
+                    studyArea: '',
+                    thumbnail: ''
                   });
                 }} className="btn-light">Cancel</button>
               </div>
@@ -228,6 +283,7 @@ const AdminScholarships = () => {
           <input name="university" value={filters.university} onChange={handleFilterChange} placeholder="University" style={{ flex: 1, minWidth: '120px', fontSize: '0.8rem', padding: '6px 10px', height: '32px' }} />
           <input name="fundedBy" value={filters.fundedBy} onChange={handleFilterChange} placeholder="Funded By" style={{ flex: 1, minWidth: '100px', fontSize: '0.8rem', padding: '6px 10px', height: '32px' }} />
           <input name="degreeLevels" value={filters.degreeLevels} onChange={handleFilterChange} placeholder="Degree Level" style={{ flex: 1, minWidth: '100px', fontSize: '0.8rem', padding: '6px 10px', height: '32px' }} />
+          <input name="studyArea" value={filters.studyArea} onChange={handleFilterChange} placeholder="Study Area" style={{ flex: 1, minWidth: '100px', fontSize: '0.8rem', padding: '6px 10px', height: '32px' }} />
           <div className="flex gap-5">
             <button onClick={applyFilters} className="btn btn-primary btn-sm" style={{ padding: '0 12px', height: '32px', fontSize: '0.8rem' }}>Apply</button>
             <button onClick={resetFilters} className="btn-light btn-sm" style={{ padding: '0 12px', height: '32px', fontSize: '0.8rem' }}>Reset</button>
@@ -253,13 +309,19 @@ const AdminScholarships = () => {
                   onClick={() => setExpandedId(expandedId === scholarship._id ? null : scholarship._id)}
                 >
                   <div className="flex items-center gap-24">
-                    <Award size={24} style={{ marginRight: '10px' }} color="var(--primary-red)" />
+                    {scholarship.thumbnail ? (
+                      <img src={scholarship.thumbnail} alt="Scholarship Thumbnail" style={{ width: '45px', height: '45px', borderRadius: '6px', objectFit: 'cover', marginRight: '10px' }} />
+                    ) : (
+                      <Award size={24} style={{ marginRight: '10px' }} color="var(--primary-red)" />
+                    )}
                     <div>
                       <h4 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700, color: '#111827' }}>{scholarship.title}</h4>
                       <div style={{ display: 'flex', gap: '8px', fontSize: '0.9rem', color: '#4b5563', marginTop: '4px' }}>
                         <span style={{ fontWeight: 600 }}>{scholarship.university}</span>
                         <span>•</span>
                         <span>{scholarship.country}</span>
+                        <span>•</span>
+                        <span style={{ color: 'var(--primary-red)', fontWeight: 600 }}>{scholarship.studyArea}</span>
                       </div>
                     </div>
                   </div>
@@ -286,7 +348,7 @@ const AdminScholarships = () => {
 
                 {expandedId === scholarship._id && (
                   <div className="p-20 border-top bg-white">
-                    <div className="grid grid-cols-2 gap-20">
+                    <div className="grid grid-cols-3 gap-20">
                       <div className="p-15 bg-gray-50 rounded-8" style={{ border: '1px solid #e5e7eb', borderLeft: '5px solid var(--primary-red)', paddingLeft: '20px' }}>
                         <h5 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--primary-red)', marginBottom: '8px' }}>Degree Levels</h5>
                         <div className="flex gap-5 flex-wrap">
@@ -298,6 +360,10 @@ const AdminScholarships = () => {
                       <div className="p-15 bg-gray-50 rounded-8" style={{ border: '1px solid #e5e7eb', borderLeft: '5px solid #1e40af', paddingLeft: '20px' }}>
                         <h5 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1e40af', marginBottom: '8px' }}>Funding Status</h5>
                         <p style={{ fontSize: '1.05rem', margin: 0, color: '#111827', fontWeight: 600 }}>{scholarship.fundedBy}</p>
+                      </div>
+                      <div className="p-15 bg-gray-50 rounded-8" style={{ border: '1px solid #e5e7eb', borderLeft: '5px solid #10b981', paddingLeft: '20px' }}>
+                        <h5 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#10b981', marginBottom: '8px' }}>Study Area</h5>
+                        <p style={{ fontSize: '1.05rem', margin: 0, color: '#111827', fontWeight: 600 }}>{scholarship.studyArea}</p>
                       </div>
                     </div>
 

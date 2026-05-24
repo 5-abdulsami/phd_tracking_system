@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../utils/axios';
+import { useNavigate } from 'react-router-dom';
 import {
   Search, Globe, Plus,
   ChevronDown, ChevronUp, Edit2,
-  Trash2, MessageCircle, User
+  Trash2, MessageCircle, User, Eye
 } from 'lucide-react';
 import AdminLayout from '../components/layout/AdminLayout';
 import RemarksSection from '../components/RemarksSection';
@@ -18,6 +19,7 @@ const AdminUniversityApps = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [expandedId, setExpandedId] = useState(null);
   const { user: currentUser } = useAuth();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     universityName: '',
@@ -139,6 +141,11 @@ const AdminUniversityApps = () => {
               >
                 <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{student.applicantInfo?.firstName} {student.applicantInfo?.lastName}</div>
                 <div style={{ fontSize: '0.75rem', color: '#666' }}>{student.user?.email}</div>
+                <div style={{ display: 'flex', gap: '8px', fontSize: '0.7rem', marginTop: '4px', color: '#4b5563' }}>
+                  <span>Progress: <strong style={{ color: 'var(--primary-red)' }}>{student.completionPercentage}%</strong></span>
+                  <span>•</span>
+                  <span>Strength: <strong style={{ color: '#10b981' }}>{student.profileStrength}%</strong></span>
+                </div>
               </div>
             ))}
           </div>
@@ -150,8 +157,15 @@ const AdminUniversityApps = () => {
             <div className="student-apps-content">
               <div className="flex justify-between items-center mb-15 bg-white p-15 rounded-8 shadow-sm">
                 <div>
-                  <h2 style={{ fontSize: '1.3rem', margin: 0 }}>Applications for {selectedStudent.applicantInfo?.firstName}</h2>
-                  <p style={{ margin: 0, color: '#666', fontSize: '0.85rem' }}>{selectedStudent.user?.email}</p>
+                  <h2 style={{ fontSize: '1.3rem', margin: 0 }}>Applications for {selectedStudent.applicantInfo?.firstName} {selectedStudent.applicantInfo?.lastName}</h2>
+                  <p style={{ margin: '2px 0 8px 0', color: '#666', fontSize: '0.85rem' }}>{selectedStudent.user?.email}</p>
+                  <button
+                    onClick={() => navigate(`/admin/applications/${selectedStudent._id}`)}
+                    className="btn btn-light flex items-center gap-5"
+                    style={{ fontSize: '0.8rem', padding: '6px 12px', border: '1px solid #ddd', backgroundColor: '#f9fafb', color: '#374151' }}
+                  >
+                    <Eye size={14} color="var(--primary-red)" /> View Profile Completion Detail ({selectedStudent.completionPercentage}% Done)
+                  </button>
                 </div>
                 {!isAdding && (
                   <button

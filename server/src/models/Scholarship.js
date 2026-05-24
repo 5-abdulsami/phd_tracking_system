@@ -40,6 +40,15 @@ const scholarshipSchema = new mongoose.Schema({
   description: {
     type: String,
     required: [true, 'Description is required']
+  },
+  studyArea: {
+    type: String,
+    required: [true, 'Study Area is required'],
+    trim: true
+  },
+  thumbnail: {
+    type: String,
+    default: ''
   }
 }, {
   timestamps: true

@@ -5,16 +5,22 @@ const User = require('../models/User');
 
 // @desc    Create a new university application for a student
 // @route   POST /api/university-applications
-// @access  Private/Admin
+// @access  Private
 const createUniversityApplication = asyncHandler(async (req, res) => {
-  const { student, universityName, programName, status, appliedDate, portalLink, loginId, password, notes } = req.body;
+  let { student, universityName, programName, status, appliedDate, portalLink, loginId, password, notes } = req.body;
+
+  // Security: if student is applying (not admin), force student ID to be the logged-in user
+  if (req.user.role !== 'admin') {
+    student = req.user._id.toString();
+    status = 'Pending'; // Students cannot force accepted/rejected status
+  }
 
   const universityApp = await UniversityApplication.create({
     student,
     universityName,
     programName,
-    status,
-    appliedDate,
+    status: status || 'Pending',
+    appliedDate: appliedDate || new Date(),
     portalLink,
     loginId,
     password,
@@ -22,12 +28,21 @@ const createUniversityApplication = asyncHandler(async (req, res) => {
   });
 
   // Notify student
-  await Notification.create({
-    user: student,
-    title: 'New University Application Added',
-    message: `An application for ${universityName} has been added to your profile by the admin.`,
-    type: 'general'
-  });
+  if (req.user.role === 'admin') {
+    await Notification.create({
+      user: student,
+      title: 'New University Application Added',
+      message: `An application for ${universityName} has been added to your profile by the admin.`,
+      type: 'general'
+    });
+  } else {
+    await Notification.create({
+      user: req.user._id,
+      title: 'Scholarship Application Submitted',
+      message: `You have successfully applied for the scholarship: ${universityName}.`,
+      type: 'general'
+    });
+  }
 
   res.status(201).json(universityApp);
 });

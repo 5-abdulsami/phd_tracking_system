@@ -9,7 +9,7 @@ const {
 const { protect, admin } = require('../middleware/authMiddleware');
 
 router.route('/')
-  .post(protect, admin, createUniversityApplication);
+  .post(protect, createUniversityApplication);
 
 router.route('/:id')
   .put(protect, admin, updateUniversityApplication)

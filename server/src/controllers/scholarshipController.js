@@ -13,7 +13,7 @@ const createScholarship = asyncHandler(async (req, res) => {
 // @route   GET /api/scholarships
 // @access  Private
 const getScholarships = asyncHandler(async (req, res) => {
-  const { title, country, university, degreeLevels, fundedBy } = req.query;
+  const { title, country, university, degreeLevels, fundedBy, studyArea } = req.query;
   
   let query = {};
   
@@ -28,6 +28,9 @@ const getScholarships = asyncHandler(async (req, res) => {
   }
   if (fundedBy) {
     query.fundedBy = { $regex: fundedBy, $options: 'i' };
+  }
+  if (studyArea) {
+    query.studyArea = { $regex: studyArea, $options: 'i' };
   }
   if (degreeLevels) {
     const levels = Array.isArray(degreeLevels) ? degreeLevels : degreeLevels.split(',').map(l => l.trim());

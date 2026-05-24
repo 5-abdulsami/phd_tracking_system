@@ -9,7 +9,7 @@ const {
 const { protect, admin } = require('../middleware/authMiddleware');
 
 router.route('/')
-  .get(protect, getScholarships)
+  .get(getScholarships)
   .post(protect, admin, createScholarship);
 
 router.route('/:id')
