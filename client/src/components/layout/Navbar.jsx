@@ -48,16 +48,16 @@ const Navbar = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'default' }}>
             <img src={logo} alt="Spectrum Consultants" style={{ height: '50px' }} />
             <div>
-              <span style={{ fontWeight: 700, fontSize: '1.2rem', color: 'var(--secondary-dark)' }}>PHD</span>
-              <span style={{ fontWeight: 400, fontSize: '1.2rem', color: 'var(--text-muted)' }}>TRACKING</span>
+              <span style={{ fontWeight: 700, fontSize: '1.2rem', color: 'var(--secondary-dark)' }}>SCHOLARSHIPS</span>
+              <span style={{ fontWeight: 400, fontSize: '1.2rem', color: 'var(--text-muted)' }}>HUB</span>
             </div>
           </div>
         ) : (
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <img src={logo} alt="Spectrum Consultants" style={{ height: '50px' }} />
             <div>
-              <span style={{ fontWeight: 700, fontSize: '1.2rem', color: 'var(--secondary-dark)' }}>PHD</span>
-              <span style={{ fontWeight: 400, fontSize: '1.2rem', color: 'var(--text-muted)' }}>TRACKING</span>
+              <span style={{ fontWeight: 700, fontSize: '1.2rem', color: 'var(--secondary-dark)' }}>SCHOLARSHIPS</span>
+              <span style={{ fontWeight: 400, fontSize: '1.2rem', color: 'var(--text-muted)' }}>HUB</span>
             </div>
           </Link>
         )}

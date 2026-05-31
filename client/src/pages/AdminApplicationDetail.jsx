@@ -40,7 +40,7 @@ const AdminApplicationDetail = () => {
       await axios.post('/api/notifications', {
         userId: application.user._id,
         title: 'Application Status Updated',
-        message: `Your PhD application status has been updated to: ${newStatus.replace('_', ' ')}`,
+        message: `Your scholarship application status has been updated to: ${newStatus.replace('_', ' ')}`,
         type: 'status_update'
       });
       fetchApplication();

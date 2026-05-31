@@ -100,7 +100,7 @@ const DashboardPage = () => {
       <div className="welcome-header flex justify-between items-center mb-20" style={{ padding: '0 0 20px 0', borderBottom: '1px solid var(--border-color)' }}>
         <div>
           <h1 style={{ fontSize: '1.8rem' }}>Welcome, {application?.applicantInfo?.firstName ? `${application.applicantInfo.firstName} ${application.applicantInfo.lastName}` : user.email.split('@')[0]}</h1>
-          <p style={{ color: 'var(--text-muted)' }}>Manage your PhD profile and track your status.</p>
+          <p style={{ color: 'var(--text-muted)' }}>Manage your scholarship assessment profile and track your status.</p>
         </div>
         <div className="status-badge flex items-center gap-10" style={{
           backgroundColor: '#f3f4f6', padding: '8px 16px', borderRadius: '20px',
@@ -127,7 +127,7 @@ const DashboardPage = () => {
             </div>
 
             <p style={{ marginBottom: '20px', color: 'var(--text-muted)' }}>
-              Complete all mandatory sections to submit your PhD profile.
+              Complete all mandatory sections to submit your scholarship profile.
             </p>
 
             <button

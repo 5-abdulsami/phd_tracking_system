@@ -64,7 +64,7 @@ const RegisterPage = () => {
       <div className="card" style={{ width: '100%', maxWidth: '450px', padding: '40px' }}>
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
           <h2 style={{ fontSize: '1.8rem', color: 'var(--secondary-dark)' }}>Apply Now</h2>
-          <p style={{ color: 'var(--text-muted)' }}>Start your PhD journey with Spectrum</p>
+          <p style={{ color: 'var(--text-muted)' }}>Start your scholarship journey with Spectrum</p>
         </div>
 
         {error && (

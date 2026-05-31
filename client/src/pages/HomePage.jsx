@@ -79,11 +79,11 @@ const HomePage = () => {
         <div className="container">
           <h1 style={{ fontSize: '3.5rem', color: 'white', marginBottom: '20px', lineHeight: '1.2' }}>
             Elevate Your Career with <br />
-            <span style={{ color: 'var(--primary-red)' }}>PhD & Postdoctoral</span> Tracking
+            <span style={{ color: 'var(--primary-red)' }}>Scholarships</span> Hub
           </h1>
           <p style={{ fontSize: '1.2rem', color: '#ccc', maxWidth: '800px', margin: '0 auto 40px auto' }}>
-            Your professional gateway to global research opportunities. Track your application
-            from initial draft to final institutional acceptance with Spectrum Consultants.
+            Your professional gateway to global research opportunities. Discover and apply to
+            premier international scholarship programs with Spectrum Consultants.
           </p>
           <div className="flex justify-center gap-20">
             <Link to="/register" className="btn btn-primary" style={{ padding: '15px 40px', fontSize: '1.1rem' }}>Get Assessment Now</Link>
