@@ -88,7 +88,7 @@ const addRemark = asyncHandler(async (req, res) => {
 // @route   GET /api/remarks/:id
 // @access  Private
 const getRemarks = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  const id = req.params.applicationId || req.params.id;
   const { type } = req.query;
 
   if (!id || id === 'undefined' || id === 'null') {
