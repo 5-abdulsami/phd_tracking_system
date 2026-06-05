@@ -20,7 +20,9 @@ const UniversityApplicationsManager = ({ studentId, currentUser, isAdmin }) => {
   const [scholarships, setScholarships] = useState([]);
   const [scholarshipsLoading, setScholarshipsLoading] = useState(true);
   const [appliedScholarships, setAppliedScholarships] = useState(new Set());
+  const [selectedDetailScholarship, setSelectedDetailScholarship] = useState(null);
   const [filters, setFilters] = useState({
+    title: '',
     country: '',
     degreeLevels: 'all',
     studyArea: ''
@@ -65,6 +67,7 @@ const UniversityApplicationsManager = ({ studentId, currentUser, isAdmin }) => {
       setScholarshipsLoading(true);
       
       const params = new URLSearchParams();
+      if (currentFilters.title) params.append('title', currentFilters.title);
       if (currentFilters.country) params.append('country', currentFilters.country);
       if (currentFilters.studyArea) params.append('studyArea', currentFilters.studyArea);
       if (currentFilters.degreeLevels && currentFilters.degreeLevels !== 'all') {
@@ -95,6 +98,7 @@ const UniversityApplicationsManager = ({ studentId, currentUser, isAdmin }) => {
 
   const resetFilters = () => {
     const defaultFilters = {
+      title: '',
       country: '',
       degreeLevels: 'all',
       studyArea: ''
@@ -382,6 +386,15 @@ const UniversityApplicationsManager = ({ studentId, currentUser, isAdmin }) => {
           <form onSubmit={applyFilters} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '25px', padding: '15px', backgroundColor: '#f9fafb', borderRadius: '10px', border: '1px solid #e5e7eb' }}>
             <div style={{ flex: 1, minWidth: '150px' }}>
               <input
+                name="title"
+                value={filters.title}
+                onChange={handleFilterChange}
+                placeholder="Scholarship Title (e.g. Gates)"
+                style={{ width: '100%', height: '38px', fontSize: '0.85rem' }}
+              />
+            </div>
+            <div style={{ flex: 1, minWidth: '150px' }}>
+              <input
                 name="country"
                 value={filters.country}
                 onChange={handleFilterChange}
@@ -467,42 +480,231 @@ const UniversityApplicationsManager = ({ studentId, currentUser, isAdmin }) => {
                       <span style={{ fontSize: '0.75rem', padding: '4px 8px', backgroundColor: '#ecfdf5', color: '#065f46', borderRadius: '4px', fontWeight: 600 }}>{scholarship.fundedBy} Funded</span>
                     </div>
 
-                    <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f3f4f6', paddingTop: '15px' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span style={{ fontSize: '0.7rem', color: '#9ca3af', fontWeight: 500 }}>Deadline</span>
-                        <span style={{ fontSize: '0.8rem', color: '#dc2626', fontWeight: 600 }}>{new Date(scholarship.deadline).toLocaleDateString()}</span>
+                    <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', borderTop: '1px solid #f3f4f6', paddingTop: '15px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span style={{ fontSize: '0.7rem', color: '#9ca3af', fontWeight: 500 }}>Deadline</span>
+                          <span style={{ fontSize: '0.8rem', color: '#dc2626', fontWeight: 600 }}>{new Date(scholarship.deadline).toLocaleDateString()}</span>
+                        </div>
                       </div>
-                      <button
-                        onClick={() => handleApplyToScholarship(scholarship)}
-                        disabled={alreadyApplied}
-                        className={alreadyApplied ? 'btn-light' : 'btn btn-primary'}
-                        style={{
-                          padding: '6px 16px',
-                          fontSize: '0.8rem',
-                          height: '34px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          backgroundColor: alreadyApplied ? '#f3f4f6' : 'var(--primary-red)',
-                          color: alreadyApplied ? '#9ca3af' : 'white',
-                          border: 'none',
-                          borderRadius: '6px',
-                          fontWeight: 700,
-                          cursor: alreadyApplied ? 'not-allowed' : 'pointer'
-                        }}
-                      >
-                        {alreadyApplied ? (
-                          <>Applied <Check size={14} /></>
-                        ) : (
-                          <>Apply Now <ArrowRight size={14} /></>
-                        )}
-                      </button>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button
+                          onClick={() => setSelectedDetailScholarship(scholarship)}
+                          className="btn-light"
+                          style={{
+                            flex: 1,
+                            padding: '6px 10px',
+                            fontSize: '0.8rem',
+                            height: '34px',
+                            border: '1px solid #ddd',
+                            borderRadius: '6px',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            backgroundColor: '#fff',
+                            color: '#374151',
+                            textAlign: 'center'
+                          }}
+                        >
+                          View Details
+                        </button>
+                        <button
+                          onClick={() => handleApplyToScholarship(scholarship)}
+                          disabled={alreadyApplied}
+                          className={alreadyApplied ? 'btn-light' : 'btn btn-primary'}
+                          style={{
+                            flex: 1,
+                            padding: '6px 10px',
+                            fontSize: '0.8rem',
+                            height: '34px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '6px',
+                            backgroundColor: alreadyApplied ? '#f3f4f6' : 'var(--primary-red)',
+                            color: alreadyApplied ? '#9ca3af' : 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            fontWeight: 700,
+                            cursor: alreadyApplied ? 'not-allowed' : 'pointer'
+                          }}
+                        >
+                          {alreadyApplied ? (
+                            <>Applied <Check size={14} /></>
+                          ) : (
+                            <>Apply Now <ArrowRight size={14} /></>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
               })}
             </div>
           )}
+        </div>
+      )}
+
+      {selectedDetailScholarship && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 2000,
+          padding: '20px'
+        }} onClick={() => setSelectedDetailScholarship(null)}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            width: '100%',
+            maxWidth: '650px',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)',
+            position: 'relative',
+          }} onClick={(e) => e.stopPropagation()}>
+            
+            <div style={{
+              padding: '20px 25px',
+              borderBottom: '1px solid #e5e7eb',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              position: 'sticky',
+              top: 0,
+              backgroundColor: 'white',
+              zIndex: 10
+            }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 700, color: 'var(--secondary-dark)' }}>
+                  {selectedDetailScholarship.title}
+                </h3>
+                <p style={{ margin: '5px 0 0 0', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+                  {selectedDetailScholarship.university} • <strong>{selectedDetailScholarship.country}</strong>
+                </p>
+              </div>
+              <button 
+                onClick={() => setSelectedDetailScholarship(null)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#9ca3af',
+                  padding: '5px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div style={{ padding: '25px' }}>
+              
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                gap: '15px',
+                marginBottom: '25px',
+                padding: '15px',
+                backgroundColor: '#f9fafb',
+                borderRadius: '8px',
+                border: '1px solid #f3f4f6'
+              }}>
+                <div>
+                  <span style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Funding</span>
+                  <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#1e40af' }}>{selectedDetailScholarship.fundedBy} Funded</span>
+                </div>
+                <div>
+                  <span style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Study Area</span>
+                  <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#065f46' }}>{selectedDetailScholarship.studyArea}</span>
+                </div>
+                <div>
+                  <span style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Levels</span>
+                  <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#111827' }}>
+                    {Array.isArray(selectedDetailScholarship.degreeLevels) ? selectedDetailScholarship.degreeLevels.join(', ') : selectedDetailScholarship.degreeLevels}
+                  </span>
+                </div>
+                <div>
+                  <span style={{ display: 'block', fontSize: '0.75rem', color: '#9ca3af', fontWeight: 600, textTransform: 'uppercase' }}>Deadline</span>
+                  <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#dc2626' }}>
+                    {new Date(selectedDetailScholarship.deadline).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '25px' }}>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--secondary-dark)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Calendar size={18} color="var(--primary-red)" /> Description
+                </h4>
+                <p style={{ fontSize: '0.95rem', color: '#4b5563', lineHeight: '1.6', whiteSpace: 'pre-line', margin: 0 }}>
+                  {selectedDetailScholarship.description}
+                </p>
+              </div>
+
+              <div style={{ marginBottom: '25px' }}>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--secondary-dark)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Award size={18} color="var(--primary-red)" /> Eligibility Criteria
+                </h4>
+                <p style={{ fontSize: '0.95rem', color: '#4b5563', lineHeight: '1.6', whiteSpace: 'pre-line', margin: 0 }}>
+                  {selectedDetailScholarship.eligibilityCriteria}
+                </p>
+              </div>
+
+              <div style={{ marginBottom: '25px' }}>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--secondary-dark)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Award size={18} color="var(--primary-red)" /> Benefits
+                </h4>
+                <p style={{ fontSize: '0.95rem', color: '#4b5563', lineHeight: '1.6', whiteSpace: 'pre-line', margin: 0 }}>
+                  {selectedDetailScholarship.benefits}
+                </p>
+              </div>
+
+            </div>
+
+            <div style={{
+              padding: '15px 25px',
+              borderTop: '1px solid #e5e7eb',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: '10px',
+              position: 'sticky',
+              bottom: 0,
+              backgroundColor: 'white',
+              zIndex: 10
+            }}>
+              <button 
+                onClick={() => setSelectedDetailScholarship(null)}
+                className="btn-light"
+                style={{ padding: '8px 20px', border: '1px solid #ddd', borderRadius: '6px', cursor: 'pointer' }}
+              >
+                Close
+              </button>
+              <button 
+                onClick={() => {
+                  handleApplyToScholarship(selectedDetailScholarship);
+                  setSelectedDetailScholarship(null);
+                }}
+                disabled={appliedScholarships.has(`${selectedDetailScholarship.university.trim()}||${selectedDetailScholarship.title.trim()}`)}
+                className={appliedScholarships.has(`${selectedDetailScholarship.university.trim()}||${selectedDetailScholarship.title.trim()}`) ? 'btn-light' : 'btn btn-primary'}
+                style={{
+                  padding: '8px 25px',
+                  borderRadius: '6px',
+                  cursor: appliedScholarships.has(`${selectedDetailScholarship.university.trim()}||${selectedDetailScholarship.title.trim()}`) ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {appliedScholarships.has(`${selectedDetailScholarship.university.trim()}||${selectedDetailScholarship.title.trim()}`) ? 'Applied' : 'Apply Now'}
+              </button>
+            </div>
+
+          </div>
         </div>
       )}
     </div>
