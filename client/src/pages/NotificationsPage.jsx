@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from '../utils/axios';
-import { Bell, CheckCircle, Info, Calendar, MailOpen } from 'lucide-react';
+import { Bell, CheckCircle, Info, Calendar, MailOpen, ChevronLeft } from 'lucide-react';
 
 const NotificationsPage = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchNotifications();
   }, []);
+
+  const markAllAsRead = async () => {
+    try {
+      await axios.put('/api/notifications/mark-all-read');
+      setNotifications(notifications.map(n => ({ ...n, isRead: true })));
+    } catch (err) {
+      console.error('Error marking all notifications as read:', err);
+    }
+  };
 
   const fetchNotifications = async () => {
     try {
@@ -34,15 +45,30 @@ const NotificationsPage = () => {
   if (loading) return <div className="container mt-20">Loading Notifications...</div>;
 
   return (
-    <div className="notifications-page container mt-20">
-      <div className="flex justify-between items-center mb-20">
-        <h1 style={{ fontSize: '1.8rem' }}>Notifications</h1>
-        <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-          {notifications.filter(n => !n.isRead).length} Unread
-        </span>
+    <div className="notifications-page container mt-20 mb-40">
+      <div className="flex items-center gap-5 mb-20" onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+        <ChevronLeft size={16} /> Back to Dashboard
       </div>
 
-      <div className="notifications-list flex flex-col gap-10">
+      <div className="flex justify-between items-center mb-20">
+        <h1 style={{ fontSize: '1.8rem' }}>Notifications</h1>
+        <div className="flex items-center gap-15">
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+            {notifications.filter(n => !n.isRead).length} Unread
+          </span>
+          {notifications.some(n => !n.isRead) && (
+            <button
+              onClick={markAllAsRead}
+              className="btn-light"
+              style={{ padding: '6px 12px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '5px', borderRadius: '4px' }}
+            >
+              Mark all as read
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="notifications-list flex flex-col gap-10 mb-40">
         {notifications.length === 0 ? (
           <div className="card" style={{ textAlign: 'center', padding: '50px' }}>
             <Bell size={48} color="#ccc" style={{ marginBottom: '15px' }} />

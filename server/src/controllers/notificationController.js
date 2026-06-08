@@ -43,8 +43,24 @@ const createNotification = async (req, res) => {
   res.status(201).json(notification);
 };
 
+// @desc    Mark all notifications as read
+// @route   PUT /api/notifications/mark-all-read
+// @access  Private
+const markAllRead = async (req, res) => {
+  try {
+    await Notification.updateMany(
+      { user: req.user._id, isRead: false },
+      { $set: { isRead: true } }
+    );
+    res.json({ message: 'All notifications marked as read' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
   getMyNotifications,
   markRead,
   createNotification,
+  markAllRead,
 };

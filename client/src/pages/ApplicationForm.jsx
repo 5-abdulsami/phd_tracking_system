@@ -233,6 +233,23 @@ const ApplicationForm = () => {
               <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Step {step} of 11</span>
             </div>
 
+            <div style={{
+              backgroundColor: '#fffbeb',
+              borderLeft: '4px solid #f59e0b',
+              padding: '12px 16px',
+              borderRadius: '6px',
+              marginBottom: '25px',
+              fontSize: '0.9rem',
+              color: '#78350f',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
+            }}>
+              <span style={{ fontSize: '1.1rem' }}>⚠️</span>
+              <span><strong>Important:</strong> Please ensure you click the <strong>Save Progress</strong> button before navigating to another section to keep your changes updated.</span>
+            </div>
+
             <div className="step-component" style={{ minHeight: '400px' }}>
               {step === 1 && <ApplicantInfo data={formData.applicantInfo} updateData={updateFormData} />}
               {step === 2 && <ContactDetails data={formData.contactDetails} updateData={updateFormData} />}
